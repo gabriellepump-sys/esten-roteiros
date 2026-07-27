@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Esten — Roteiros de Conteúdo</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root {
+    --olive: #6B6F4C;
+    --olive-dark: #4E5238;
+    --olive-pale: #F1F1E9;
+    --terracotta: #B4622E;
+    --terracotta-pale: #F3E4D8;
+    --cream: #FBF9F4;
+    --paper: #FFFFFF;
+    --ink: #2A2A22;
+    --ink-soft: #6B6A5E;
+    --line: #E4E1D3;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 64px 28px 120px;
+  }
+
+  /* ---- Header ---- */
+  .eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 42px;
+    line-height: 1.1;
+    margin: 0 0 12px;
+    color: var(--olive-dark);
+  }
+
+  .subtitle {
+    font-size: 16px;
+    color: var(--ink-soft);
+    max-width: 520px;
+    line-height: 1.6;
+    margin: 0 0 40px;
+  }
+
+  .meta-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 44px;
+  }
+  .meta-pill {
+    font-size: 12.5px;
+    padding: 6px 13px;
+    border-radius: 100px;
+    background: var(--olive-pale);
+    color: var(--olive-dark);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .meta-pill.terra { background: var(--terracotta-pale); color: var(--terracotta); }
+
+  /* ---- Filter bar ---- */
+  .filters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+  }
+  .filter-btn {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all .15s ease;
+  }
+  .filter-btn:hover { border-color: var(--olive); color: var(--olive-dark); }
+  .filter-btn.active {
+    background: var(--olive-dark);
+    border-color: var(--olive-dark);
+    color: var(--cream);
+  }
+
+  /* ---- Card / accordion item ---- */
+  .card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: border-color .2s ease;
+  }
+  .card.open { border-color: var(--olive); }
+
+  .card-head {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 20px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .card-head:hover { background: var(--olive-pale); }
+
+  .chevron {
+    flex: 0 0 20px;
+    width: 20px; height: 20px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--olive);
+    transition: transform .25s ease;
+  }
+  .card.open .chevron { transform: rotate(90deg); }
+
+  .num-badge {
+    flex: 0 0 auto;
+    font-family: 'Fraunces', serif;
+    font-size: 13px;
+    color: var(--terracotta);
+    background: var(--terracotta-pale);
+    width: 30px; height: 30px;
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600;
+  }
+
+  .head-text { flex: 1; min-width: 0; }
+  .head-title {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--ink);
+    margin: 0 0 3px;
+  }
+  .head-sub {
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .tag {
+    font-size: 11px;
+    padding: 2px 9px;
+    border-radius: 100px;
+    background: var(--olive-pale);
+    color: var(--olive-dark);
+    font-weight: 600;
+    letter-spacing: .02em;
+  }
+
+  .card-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .35s ease;
+  }
+  .card-body-inner {
+    padding: 4px 20px 28px 66px;
+    border-top: 1px solid var(--line);
+    margin-top: 0;
+  }
+
+  /* ---- Inner content typography ---- */
+  .block { margin-top: 22px; }
+  .block:first-child { margin-top: 24px; }
+  .block-label {
+    font-size: 11.5px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .block p {
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: var(--ink);
+    margin: 0 0 8px;
+  }
+  .block ul { margin: 0; padding-left: 18px; }
+  .block li {
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .quote-line {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--olive-dark);
+    border-left: 3px solid var(--olive);
+    padding-left: 14px;
+    margin: 6px 0;
+    line-height: 1.5;
+  }
+
+  /* Scene table */
+  .scene {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    background: var(--cream);
+  }
+  .scene-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--olive-dark);
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .scene-time { font-size: 11.5px; color: var(--ink-soft); font-weight: 500; }
+  .scene-row { display: flex; gap: 8px; margin-bottom: 6px; font-size: 13.5px; line-height: 1.55; }
+  .scene-row .k { flex: 0 0 78px; color: var(--ink-soft); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; padding-top: 1px; }
+  .scene-row .v { flex: 1; color: var(--ink); }
+
+  /* do/dont */
+  .dodont { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 8px; }
+  @media (max-width: 640px) { .dodont { grid-template-columns: 1fr; } }
+  .dd-col { border-radius: 8px; padding: 14px 16px; }
+  .dd-col.no { background: #F7ECE8; }
+  .dd-col.yes { background: var(--olive-pale); }
+  .dd-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 8px; }
+  .dd-col.no .dd-title { color: #A24B33; }
+  .dd-col.yes .dd-title { color: var(--olive-dark); }
+  .dd-col ul { padding-left: 16px; margin: 0; }
+  .dd-col li { font-size: 13px; line-height: 1.6; margin-bottom: 4px; }
+
+  /* toggle sub-section (nested notion toggle) */
+  .subtoggle { border-top: 1px dashed var(--line); margin-top: 18px; padding-top: 4px; }
+  .subtoggle-head {
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer; padding: 10px 0;
+    font-size: 13px; font-weight: 600; color: var(--olive-dark);
+  }
+  .subtoggle-head .mini-chevron { font-size: 10px; transition: transform .2s ease; color: var(--olive); }
+  .subtoggle.open .mini-chevron { transform: rotate(90deg); }
+  .subtoggle-body { max-height: 0; overflow: hidden; transition: max-height .3s ease; }
+  .subtoggle-body-inner { padding-bottom: 10px; }
+
+  .client-note {
+    background: var(--terracotta-pale);
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin-top: 8px;
+  }
+  .client-note p {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 14.5px;
+    color: #7A3E1E;
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  .cta-box {
+    background: var(--olive-dark);
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin-top: 8px;
+  }
+  .cta-box p { color: var(--cream); margin: 0 0 6px; font-size: 14px; line-height: 1.6; }
+  .cta-box p:last-child { margin-bottom: 0; }
+  .cta-box .prod-name { font-weight: 700; color: #E8D9C4; }
+
+  footer {
+    text-align: center;
+    margin-top: 60px;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">Leivadz × Esten</div>
+  <h1>Roteiros de conteúdo</h1>
+  <p class="subtitle">Cinco peças pensadas pra gerar conexão real com quem compra — e fechar em venda, sem parecer vitrine. Clique em cada card para abrir o roteiro completo.</p>
+
+  <div class="meta-row">
+    <div class="meta-pill">📅 Ciclo atual</div>
+    <div class="meta-pill terra">🎯 Objetivo: vender peças paradas via Instagram</div>
+    <div class="meta-pill">👤 Protagonista: Hosana + clientes reais</div>
+  </div>
+
+  <div class="filters" id="filters">
+    <button class="filter-btn active" data-filter="all">Todos</button>
+    <button class="filter-btn" data-filter="reel">Reels</button>
+    <button class="filter-btn" data-filter="carrossel">Carrossel</button>
+  </div>
+
+  <div id="cards"></div>
+
+  <footer>Esten — roteiro vivo, ajustável conforme a rotina real do dia de gravação.</footer>
+</div>
+
+<script>
+const DATA = [
+  {
+    id: 1,
+    type: "reel",
+    typeLabel: "Reel",
+    title: "Um dia na vida de uma peça recém-saída da loja",
+    format: "Mini-vlog narrado pela peça",
+    body: `
+      <div class="block">
+        <div class="block-label">Objetivo</div>
+        <ul>
+          <li>Gerar identificação com a rotina real de quem compra</li>
+          <li>Despertar desejo através de prova de uso</li>
+          <li>Criar conexão com o público profissional</li>
+          <li>Aumentar interesse pelo produto sem parecer propaganda</li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Ideia central</div>
+        <p>Acompanhamos o primeiro dia de uma peça depois que ela sai da Esten e chega à rotina da sua nova dona. <strong>A peça narra o próprio dia.</strong> Não é propaganda de roupa — é um vlog sobre o destino de uma peça.</p>
+        <div class="quote-line">Eu estava na loja → alguém me escolheu → saí → descobri quem era minha nova dona → acompanhei o dia dela.</div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Roteiro completo</div>
+
+        <div class="scene">
+          <div class="scene-title">Título na tela <span class="scene-time">0s – 2s</span></div>
+          <div class="scene-row"><div class="k">Texto</div><div class="v">Um dia na vida de uma peça recém-saída da loja</div></div>
+          <div class="scene-row"><div class="k">Cena</div><div class="v">A peça sendo retirada da arara ou sendo embalada.</div></div>
+          <div class="scene-row"><div class="k">Narração</div><div class="v">"Hoje foi meu último dia na Esten." <em>(corte rápido — esse é o gancho)</em></div></div>
+        </div>
+
+        <div class="scene">
+          <div class="scene-title">Cena 2 — A escolha <span class="scene-time">2s – 6s</span></div>
+          <div class="scene-row"><div class="k">Imagens</div><div class="v">Cliente entrando, olhando as peças, tocando no tecido, escolhendo, experimentando.</div></div>
+          <div class="scene-row"><div class="k">Narração</div><div class="v">"Depois de alguns dias esperando alguém me escolher… Finalmente aconteceu."</div></div>
+        </div>
+
+        <div class="scene">
+          <div class="scene-title">Cena 3 — A saída <span class="scene-time">6s – 10s</span></div>
+          <div class="scene-row"><div class="k">Imagens</div><div class="v">Peça sendo dobrada, embalagem, sacola, cliente saindo da loja.</div></div>
+          <div class="scene-row"><div class="k">Narração</div><div class="v">"Eu ainda não sabia exatamente para onde estava indo."</div></div>
+        </div>
+
+        <div class="scene">
+          <div class="scene-title">Cena 4 — A nova dona <span class="scene-time">10s – 14s</span></div>
+          <div class="scene-row"><div class="k">Imagens</div><div class="v">Cliente se arrumando: colocando a peça, ajustando a manga, pegando a bolsa, saindo.</div></div>
+          <div class="scene-row"><div class="k">Narração</div><div class="v">"Mas descobri rápido. Minha nova dona é a Dra. [Nome]."</div></div>
+        </div>
+
+        <div class="scene">
+          <div class="scene-title">Cena 5 — A rotina <span class="scene-time">14s – 25s</span></div>
+          <div class="scene-row"><div class="k">Imagens</div><div class="v">A Dra. chegando ao trabalho, entrando no consultório, atendendo, trabalhando, andando, tomando café, em movimento.</div></div>
+          <div class="scene-row"><div class="k">Narração</div><div class="v">"Hoje, acompanhei a Dra. [Nome] em mais um dia de trabalho. Entre consultas, decisões… e uma rotina que não costuma parar."</div></div>
+          <div class="scene-row"><div class="k">Atenção</div><div class="v">Não vire um vídeo sobre a profissão — ela é o contexto. O protagonista continua sendo a peça descobrindo a rotina.</div></div>
+        </div>
+
+        <div class="scene">
+          <div class="scene-title">Cena 6 — Fechamento <span class="scene-time">25s – 30s</span></div>
+          <div class="scene-row"><div class="k">Imagem</div><div class="v">Plano bonito da cliente usando a peça — andando, trabalhando ou em momento natural.</div></div>
+          <div class="scene-row"><div class="k">Narração</div><div class="v">"Parece que encontrei um bom lugar."</div></div>
+          <div class="scene-row"><div class="k">Texto na tela</div><div class="v">Qual seria o destino dessa peça na sua rotina?</div></div>
+        </div>
+
+        <div class="scene">
+          <div class="scene-title">Cena 7 — Produto <span class="scene-time">30s – 33s</span></div>
+          <div class="scene-row"><div class="k">Tela final</div><div class="v">[Nome da peça] — Esten. Disponível no site.</div></div>
+        </div>
+      </div>
+
+      <div class="subtoggle">
+        <div class="subtoggle-head" onclick="toggleSub(this)"><span class="mini-chevron">▶</span> Direção de gravação</div>
+        <div class="subtoggle-body"><div class="subtoggle-body-inner">
+          <div class="dodont">
+            <div class="dd-col no"><div class="dd-title">Evitar</div><ul>
+              <li>Modelo parada posando</li>
+              <li>Sequência de fotos bonitas</li>
+              <li>Excesso de slow motion</li>
+              <li>Música emocional</li>
+              <li>Olhar pra câmera o tempo inteiro</li>
+              <li>Frases de efeito em todas as cenas</li>
+            </ul></div>
+            <div class="dd-col yes"><div class="dd-title">Priorizar</div><ul>
+              <li>Câmera acompanhando</li>
+              <li>Pequenos movimentos</li>
+              <li>Cenas espontâneas</li>
+              <li>Detalhes</li>
+              <li>Transições simples</li>
+              <li>Cortes rápidos</li>
+            </ul></div>
+          </div>
+        </div></div>
+      </div>
+
+      <div class="subtoggle">
+        <div class="subtoggle-head" onclick="toggleSub(this)"><span class="mini-chevron">▶</span> Lista de captação</div>
+        <div class="subtoggle-body"><div class="subtoggle-body-inner">
+          <p style="font-size:13px;font-weight:600;color:var(--olive-dark);margin-bottom:4px;">Na loja</p>
+          <ul><li>Peça na arara</li><li>Detalhe do tecido</li><li>Cliente escolhendo</li><li>Prova</li><li>Embalagem</li><li>Saída</li></ul>
+          <p style="font-size:13px;font-weight:600;color:var(--olive-dark);margin:12px 0 4px;">Na rotina</p>
+          <ul><li>Cliente se arrumando</li><li>Colocando a peça</li><li>Chegando ao trabalho</li><li>Usando a peça</li><li>Cenas da rotina</li><li>Plano final</li></ul>
+        </div></div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Explicação para a cliente</div>
+        <div class="client-note"><p>"A ideia é criar um mini-vlog da peça. A gente acompanha o primeiro dia dela depois que sai da loja: ela é escolhida, vai para a casa da nova dona e depois acompanha a rotina dela. A própria peça narra o que está acontecendo. Assim, mostramos o produto em uso real sem fazer um vídeo tradicional de venda."</p></div>
+      </div>
+
+      <div class="cta-box">
+        <p><strong>Nome interno do formato:</strong> Vlog da Peça — se o piloto funcionar, vira série da Esten.</p>
+        <p><strong>CTA:</strong> Qual seria o destino dessa peça na sua rotina? &nbsp;·&nbsp; <span class="prod-name">[Nome da peça] — disponível no site</span></p>
+      </div>
+    `
+  },
+  {
+    id: 2,
+    type: "reel",
+    typeLabel: "Reel",
+    title: "O mínimo que você espera de uma roupa para trabalhar?",
+    format: "Entrevista com profissionais",
+    body: `
+      <div class="block">
+        <div class="block-label">Objetivo</div>
+        <ul>
+          <li>Descobrir, com respostas reais, o que profissionais consideram indispensável numa roupa de trabalho</li>
+          <li>Gerar identificação e prova social</li>
+          <li>Valorizar os diferenciais da Esten de forma natural</li>
+          <li>Estimular interação nos comentários</li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Ideia central</div>
+        <p>Perguntar para três profissionais qual é o mínimo que elas esperam de uma roupa para trabalhar. A intenção é ouvir mulheres que vivem essa rotina todos os dias — e só depois conectar as respostas aos atributos da Esten, mostrando que elegância, conforto e praticidade caminham juntas.</p>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Roteiro completo</div>
+
+        <div class="scene">
+          <div class="scene-title">Cena 1 — Abertura</div>
+          <div class="scene-row"><div class="k">Falado</div><div class="v">"Perguntamos para 3 profissionais: qual é o mínimo que você espera de uma roupa para trabalhar?"</div></div>
+          <div class="scene-row"><div class="k">Texto na tela</div><div class="v">Perguntamos para 3 profissionais: qual é o mínimo que você espera de uma roupa para trabalhar?</div></div>
+        </div>
+
+        <div class="scene">
+          <div class="scene-title">Cenas 2, 3 e 4 — Entrevistas</div>
+          <div class="scene-row"><div class="k">Vídeo</div><div class="v">Respostas das três profissionais, com identificação Nome | Profissão inserida na edição.</div></div>
+        </div>
+
+        <div class="scene">
+          <div class="scene-title">Cena 5 — Conclusão</div>
+          <div class="scene-row"><div class="k">Falado</div><div class="v">"No fim, mesmo com respostas diferentes, todas procuravam a mesma coisa: conforto, praticidade e segurança para enfrentar a rotina de trabalho. E é exatamente por isso que, na Esten, cada peça é pensada para acompanhar o dia inteiro, unindo elegância, conforto e um caimento que valoriza sem limitar seus movimentos."</div></div>
+          <div class="scene-row"><div class="k">Imagens</div><div class="v">Peças da Esten em uso, como apoio visual da fala.</div></div>
+        </div>
+
+        <div class="scene">
+          <div class="scene-title">Cena 6 — CTA</div>
+          <div class="scene-row"><div class="k">Falado</div><div class="v">"E para você, o que não pode faltar em uma roupa de trabalho? Conta pra gente nos comentários."</div></div>
+        </div>
+      </div>
+
+      <div class="subtoggle">
+        <div class="subtoggle-head" onclick="toggleSub(this)"><span class="mini-chevron">▶</span> Direção de gravação</div>
+        <div class="subtoggle-body"><div class="subtoggle-body-inner">
+          <div class="dodont">
+            <div class="dd-col no"><div class="dd-title">Evitar</div><ul>
+              <li>Respostas decoradas</li>
+              <li>Conduzir a entrevistada pra uma resposta específica</li>
+              <li>Linguagem excessivamente publicitária</li>
+              <li>Ambiente artificial só pra gravação</li>
+            </ul></div>
+            <div class="dd-col yes"><div class="dd-title">Priorizar</div><ul>
+              <li>Respostas espontâneas</li>
+              <li>Cortes rápidos e dinâmicos</li>
+              <li>Identificação Nome | Profissão</li>
+              <li>Expressões naturais</li>
+            </ul></div>
+          </div>
+        </div></div>
+      </div>
+
+      <div class="subtoggle">
+        <div class="subtoggle-head" onclick="toggleSub(this)"><span class="mini-chevron">▶</span> Observações de produção</div>
+        <div class="subtoggle-body"><div class="subtoggle-body-inner">
+          <ul>
+            <li>A pergunta pode aparecer só na abertura e entrar direto nas falas na edição</li>
+            <li>Resposta curta demais? Usar apoio: "Por quê?" / "O que isso significa pra você?" / "O que mais te incomoda numa roupa de trabalho?"</li>
+            <li>Captar as palavras reais de cada profissional, não uma resposta esperada</li>
+            <li>Na conclusão, ilustrar visualmente os atributos citados com peças da Esten</li>
+          </ul>
+        </div></div>
+      </div>
+
+      <div class="subtoggle">
+        <div class="subtoggle-head" onclick="toggleSub(this)"><span class="mini-chevron">▶</span> Lista de captação</div>
+        <div class="subtoggle-body"><div class="subtoggle-body-inner">
+          <p style="font-size:13px;font-weight:600;color:var(--olive-dark);margin-bottom:4px;">Entrevistas</p>
+          <ul><li>Abertura da entrevistadora</li><li>Respostas das três profissionais</li><li>Expressões espontâneas</li><li>Identificação Nome | Profissão</li></ul>
+          <p style="font-size:13px;font-weight:600;color:var(--olive-dark);margin:12px 0 4px;">Imagens de apoio</p>
+          <ul><li>Detalhes dos tecidos</li><li>Movimento das peças</li><li>Caimento no corpo</li><li>Cliente caminhando / trabalhando</li><li>Ajustes naturais da roupa</li></ul>
+        </div></div>
+      </div>
+
+      <div class="cta-box">
+        <p><strong>CTA:</strong> E para você, o que não pode faltar em uma roupa de trabalho? Conta nos comentários.</p>
+      </div>
+    `
+  },
+  {
+    id: 3,
+    type: "reel",
+    typeLabel: "Reel",
+    title: "Coisas que aprendi trabalhando com moda #01",
+    format: "Conteúdo educativo — voz da fundadora",
+    body: `
+      <div class="block">
+        <div class="block-label">Objetivo</div>
+        <p>Gerar autoridade, fortalecer a percepção de valor das peças da Esten e ensinar a audiência a desenvolver um olhar mais criterioso na hora de escolher uma roupa.</p>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Ideia central</div>
+        <p>Ao longo dos anos trabalhando com moda, algumas percepções mudaram completamente a forma como a fundadora escolhe suas próprias roupas. Neste primeiro episódio, ela compartilha um desses aprendizados — como pequenos detalhes, muitas vezes ignorados, influenciam muito mais a experiência de uso do que só a aparência da peça.</p>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Roteiro completo</div>
+
+        <div class="scene">
+          <div class="scene-title">Cena 1 — Gancho</div>
+          <div class="scene-row"><div class="k">Vídeo</div><div class="v">Fundadora falando direto pra câmera; imagens de diferentes peças entram durante a fala.</div></div>
+          <div class="scene-row"><div class="k">Falado</div><div class="v">"Coisas que aprendi trabalhando com moda e que mudaram a forma como eu escolho minhas roupas. Parece simples, mas depois que eu comecei a reparar nisso, nunca mais consegui escolher uma roupa do mesmo jeito."</div></div>
+        </div>
+
+        <div class="scene">
+          <div class="scene-title">Cena 2 — Tecido</div>
+          <div class="scene-row"><div class="k">Vídeo</div><div class="v">Close em diferentes tecidos; a fundadora toca o tecido enquanto fala.</div></div>
+          <div class="scene-row"><div class="k">Falado</div><div class="v">"Antes eu comprava uma roupa porque ela era bonita. Hoje eu quero saber como ela vai me acompanhar durante o dia. E tudo começa pelo tecido — é ele que influencia no toque, no movimento e na sensação de conforto horas depois de vestir a peça."</div></div>
+        </div>
+
+        <div class="scene">
+          <div class="scene-title">Cena 3 — Modelagem</div>
+          <div class="scene-row"><div class="k">Vídeo</div><div class="v">Detalhes da modelagem; peça no cabide e, se possível, em movimento no corpo.</div></div>
+          <div class="scene-row"><div class="k">Falado</div><div class="v">"Outra coisa que mudou meu olhar foi entender que uma roupa bonita no cabide não garante um bom caimento. É a modelagem que faz você se sentir confortável, segura e elegante ao longo da rotina."</div></div>
+        </div>
+
+        <div class="scene">
+          <div class="scene-title">Cena 4 — Acabamento</div>
+          <div class="scene-row"><div class="k">Vídeo</div><div class="v">Close em costuras, barras, acabamentos e detalhes internos.</div></div>
+          <div class="scene-row"><div class="k">Falado</div><div class="v">"E tem um detalhe que quase ninguém observa, mas eu sempre olho: os acabamentos. Eles não chamam atenção na vitrine, mas fazem diferença no tempo que essa roupa continua bonita e no prazer de vestir ela de novo."</div></div>
+        </div>
+
+        <div class="scene">
+          <div class="scene-title">Cena 5 — Fechamento</div>
+          <div class="scene-row"><div class="k">Vídeo</div><div class="v">Peças em uso, detalhes da loja, closes finais.</div></div>
+          <div class="scene-row"><div class="k">Falado</div><div class="v">"Hoje eu percebo que escolher uma roupa não é só gostar dela. É entender se ela vai fazer sentido para a vida que eu levo. E acho que esse foi um dos maiores aprendizados que a moda me deu."</div></div>
+          <div class="scene-row"><div class="k">Texto na tela</div><div class="v">O que mudou a forma como você escolhe suas roupas?</div></div>
+        </div>
+      </div>
+
+      <div class="subtoggle">
+        <div class="subtoggle-head" onclick="toggleSub(this)"><span class="mini-chevron">▶</span> Direção de gravação</div>
+        <div class="subtoggle-body"><div class="subtoggle-body-inner">
+          <div class="dodont">
+            <div class="dd-col no"><div class="dd-title">Evitar</div><ul>
+              <li>Tom professoral</li>
+              <li>Apressar a narração</li>
+              <li>Mostrar detalhes sem relacionar à experiência de uso</li>
+            </ul></div>
+            <div class="dd-col yes"><div class="dd-title">Priorizar</div><ul>
+              <li>Conversar como quem compartilha algo aprendido com o tempo</li>
+              <li>Pequenas pausas pra imagem complementar a narrativa</li>
+              <li>Ilustrar visualmente cada ponto mencionado</li>
+              <li>Linguagem simples e próxima</li>
+            </ul></div>
+          </div>
+        </div></div>
+      </div>
+
+      <div class="subtoggle">
+        <div class="subtoggle-head" onclick="toggleSub(this)"><span class="mini-chevron">▶</span> Lista de captação</div>
+        <div class="subtoggle-body"><div class="subtoggle-body-inner">
+          <p style="font-size:13px;font-weight:600;color:var(--olive-dark);margin-bottom:4px;">Fundadora</p>
+          <ul><li>Falando pra câmera</li><li>Tocando o tecido</li><li>Observando detalhes da peça</li></ul>
+          <p style="font-size:13px;font-weight:600;color:var(--olive-dark);margin:12px 0 4px;">Peças</p>
+          <ul><li>Textura e movimento do tecido</li><li>Modelagem e caimento</li><li>Costuras, barras, botões, acabamentos internos</li></ul>
+        </div></div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Explicação para a cliente</div>
+        <div class="client-note"><p>Neste episódio, você compartilha uma mudança de olhar construída pela sua experiência na moda. O foco não é apresentar um produto — é mostrar como esse conhecimento transformou sua forma de escolher roupas. Isso entrega valor, fortalece autoridade e cria conexão genuína com mulheres que também querem fazer escolhas mais conscientes.</p></div>
+      </div>
+
+      <div class="cta-box">
+        <p><strong>CTA:</strong> Conta aqui nos comentários: tem algum detalhe que você sempre observa antes de comprar uma peça?</p>
+      </div>
+    `
+  },
+  {
+    id: 4,
+    type: "carrossel",
+    typeLabel: "Carrossel",
+    title: "Uma peça. Diferentes momentos.",
+    format: "Estética de flagrante — protagonizado pela Hosana",
+    body: `
+      <div class="block">
+        <div class="block-label">Objetivo</div>
+        <p>Mostrar, por meio de flagrantes reais, como uma única peça acompanha diferentes momentos do dia. A versatilidade não é explicada: é percebida naturalmente pela repetição da mesma peça em contextos diferentes.</p>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Ideia central</div>
+        <p>Não é um roteiro fechado, cena por cena — um dia real não segue roteiro. A ideia é escolher uma peça central e, ao longo de um dia comum da Hosana, registrar momentos espontâneos, sem criar situações artificiais. O texto de cada slide também acompanha essa lógica: fala do momento vivido, nunca da roupa.</p>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Por que vale a pena</div>
+        <p>Em vez de dizer que a peça é versátil, o conteúdo deixa a audiência chegar sozinha a essa conclusão. Isso aproxima a marca da realidade da cliente, fortalece o posicionamento premium e reduz a sensação de vitrine.</p>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Slide 1 — Capa</div>
+        <div class="scene">
+          <div class="scene-row"><div class="k">Foto</div><div class="v">Hosana saindo de casa, fechando a porta ou pegando as chaves.</div></div>
+          <div class="scene-row"><div class="k">Texto</div><div class="v">E se uma única peça acompanhasse todo o seu dia? Do primeiro ao último compromisso do dia.</div></div>
+        </div>
+      </div>
+
+      <div class="subtoggle">
+        <div class="subtoggle-head" onclick="toggleSub(this)"><span class="mini-chevron">▶</span> Momentos para captar (sugestões, não slides fixos)</div>
+        <div class="subtoggle-body"><div class="subtoggle-body-inner">
+          <p style="font-size:13px;font-weight:600;color:var(--olive-dark);margin-bottom:4px;">Manhã</p>
+          <ul><li>Saindo de casa / fechando a porta / pegando as chaves</li><li>Caminhando até o carro ou elevador</li><li>Café na mão</li><li>Chegando ao trabalho / entrando na loja</li></ul>
+          <p style="font-size:13px;font-weight:600;color:var(--olive-dark);margin:12px 0 4px;">Durante o trabalho</p>
+          <ul><li>Atendendo cliente / organizando peças / conversando com a equipe</li><li>Trabalhando no notebook, respondendo mensagens</li><li><em>Mudanças naturais:</em> blazer retirado, mangas dobradas, cabelo preso</li></ul>
+          <p style="font-size:13px;font-weight:600;color:var(--olive-dark);margin:12px 0 4px;">Pausa</p>
+          <ul><li>Cafeteria, lanche rápido, conversa, celular, janela</li><li><em>Mudanças naturais:</em> café na mesa, óculos apoiados, expressão mais leve</li></ul>
+          <p style="font-size:13px;font-weight:600;color:var(--olive-dark);margin:12px 0 4px;">Fim da tarde</p>
+          <ul><li>Saindo do trabalho, caminhando pela rua, livraria, cafeteria</li><li><em>Mudanças naturais:</em> luz do entardecer, casaco nas mãos</li></ul>
+          <p style="font-size:13px;font-weight:600;color:var(--olive-dark);margin:12px 0 4px;">Noite</p>
+          <ul><li>Jantar em família, encontro com amigas, compromisso da igreja</li><li><em>Mudanças naturais:</em> colar/brincos diferentes, blazer recolocado, luz mais quente</li></ul>
+          <p style="font-size:13px;font-weight:600;color:var(--olive-dark);margin:12px 0 4px;">Fechamento</p>
+          <ul><li>Retrato espontâneo ao final do dia</li><li>Close do tecido ou caimento ainda em uso</li></ul>
+        </div></div>
+      </div>
+
+      <div class="subtoggle">
+        <div class="subtoggle-head" onclick="toggleSub(this)"><span class="mini-chevron">▶</span> Sugestão de narrativa dos slides</div>
+        <div class="subtoggle-body"><div class="subtoggle-body-inner">
+          <p style="font-size:13px;color:var(--ink-soft);margin-bottom:10px;">Referência — adaptar de acordo com o que for realmente registrado.</p>
+          <ul>
+            <li><strong>Slide 1:</strong> E se uma única peça acompanhasse todo o seu dia? Do primeiro ao último compromisso do dia.</li>
+            <li><strong>Slide 2:</strong> Tem dias que começam cedo.</li>
+            <li><strong>Slide 3:</strong> E quase nunca seguem exatamente como planejamos.</li>
+            <li><strong>Slide 4:</strong> Entre um compromisso e outro, um respiro.</li>
+            <li><strong>Slide 5:</strong> O expediente termina. O dia, não.</li>
+            <li><strong>Slide 6:</strong> Porque alguns dos melhores momentos acontecem depois do trabalho.</li>
+            <li><strong>Slide 7:</strong> Quando uma roupa acompanha o seu ritmo, você só precisa viver o dia.</li>
+            <li><strong>Slide 8:</strong> Essa peça acompanhou um dia inteiro. Agora imagine tudo o que ela pode viver com você. Conheça a [Nome da peça] no site da Esten.</li>
+          </ul>
+        </div></div>
+      </div>
+
+      <div class="subtoggle">
+        <div class="subtoggle-head" onclick="toggleSub(this)"><span class="mini-chevron">▶</span> Direção de gravação</div>
+        <div class="subtoggle-body"><div class="subtoggle-body-inner">
+          <div class="dodont">
+            <div class="dd-col no"><div class="dd-title">Evitar</div><ul>
+              <li>Parar a rotina pra montar cenas</li>
+              <li>Poses ou olhares fixos pra câmera</li>
+              <li>Aparência de campanha publicitária</li>
+              <li>Still de produto isolado</li>
+              <li>Texto descrevendo a roupa</li>
+            </ul></div>
+            <div class="dd-col yes"><div class="dd-title">Priorizar</div><ul>
+              <li>Momentos espontâneos enquanto a rotina acontece</li>
+              <li>Transições entre um momento e outro</li>
+              <li>Luz natural de cada horário</li>
+              <li>Pequenas imperfeições e expressões naturais</li>
+              <li>A mesma peça como protagonista o tempo todo</li>
+            </ul></div>
+          </div>
+        </div></div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Explicação para a Hosana</div>
+        <div class="client-note"><p>"Você vive um dia normal, e nós registramos pequenos momentos da sua rotina conforme eles acontecem. Não é uma sessão de fotos — é acompanhar situações reais de forma leve. No final, organizamos as imagens em sequência pra mostrar que a mesma peça esteve presente do início ao fim do dia. Em nenhum momento precisamos dizer que ela é versátil — quem acompanha o carrossel percebe isso sozinho."</p></div>
+      </div>
+
+      <div class="cta-box">
+        <p><strong>Legenda:</strong> Essa peça aguentou meu dia inteiro. Confira se ela aguenta o seu — no site.</p>
+        <p><span class="prod-name">[Nome da peça] — Esten</span></p>
+      </div>
+    `
+  },
+  {
+    id: 5,
+    type: "reel",
+    typeLabel: "Reel",
+    title: "POV: você começou a reparar nos detalhes antes de comprar uma roupa",
+    format: "POV contemplativo",
+    body: `
+      <div class="block">
+        <div class="block-label">Objetivo</div>
+        <p>Gerar percepção de valor, desejo e fortalecer o posicionamento da marca por meio de uma narrativa visual minimalista.</p>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Ideia central</div>
+        <p>Um vídeo contemplativo que convida a audiência a observar uma roupa com um novo olhar. Uma única frase permanece fixa na tela enquanto diferentes detalhes da peça são apresentados — sem transformar o conteúdo em apresentação de produto.</p>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Roteiro completo</div>
+        <div class="scene">
+          <div class="scene-title">Cena única <span class="scene-time">0s – 7s</span></div>
+          <div class="scene-row"><div class="k">Texto fixo</div><div class="v">POV: Você começou a reparar nos detalhes antes de comprar uma roupa.</div></div>
+          <div class="scene-row"><div class="k">Sequência</div><div class="v">Close na textura do tecido → movimento do tecido ao ser manuseado → detalhe da gola → botões → costura → caimento no cabide → movimento em plano aberto.</div></div>
+        </div>
+      </div>
+
+      <div class="subtoggle">
+        <div class="subtoggle-head" onclick="toggleSub(this)"><span class="mini-chevron">▶</span> Direção de gravação</div>
+        <div class="subtoggle-body"><div class="subtoggle-body-inner">
+          <div class="dodont">
+            <div class="dd-col no"><div class="dd-title">Evitar</div><ul>
+              <li>Movimentos rápidos de câmera</li>
+              <li>Excesso de cortes</li>
+              <li>Muitas peças diferentes no mesmo vídeo</li>
+              <li>Poluir a cena com muitos elementos</li>
+            </ul></div>
+            <div class="dd-col yes"><div class="dd-title">Priorizar</div><ul>
+              <li>Closes</li>
+              <li>Movimentos lentos</li>
+              <li>Luz natural</li>
+              <li>Textura, caimento e acabamento</li>
+              <li>Estética limpa e sofisticada</li>
+            </ul></div>
+          </div>
+          <p style="margin-top:10px;">Frase fixa a narração inteira; sem legendas adicionais. Música instrumental elegante pode conduzir a narrativa. Pode ser gravado só dentro da loja, com diferentes peças da coleção.</p>
+        </div></div>
+      </div>
+
+      <div class="cta-box">
+        <p><strong>Legenda:</strong> Depois que você percebe isso, fica difícil comprar roupa do mesmo jeito. Com o tempo, você deixa de olhar apenas para a cor ou para o modelo. Começa a reparar no tecido, no caimento, nos acabamentos e em detalhes que fazem diferença muito depois da compra.</p>
+        <p>São essas pequenas escolhas que transformam a experiência de vestir uma peça. Acesse nosso site e veja de perto as peças que unem elegância, qualidade e cuidado em cada detalhe.</p>
+      </div>
+    `
+  }
+];
+
+const container = document.getElementById('cards');
+
+function render(list) {
+  container.innerHTML = list.map(item => `
+    <div class="card" id="card-${item.id}">
+      <div class="card-head" onclick="toggleCard(${item.id})">
+        <div class="chevron">▶</div>
+        <div class="num-badge">${String(item.id).padStart(2,'0')}</div>
+        <div class="head-text">
+          <div class="head-title">${item.title}</div>
+          <div class="head-sub"><span class="tag">${item.typeLabel}</span> ${item.format}</div>
+        </div>
+      </div>
+      <div class="card-body" id="body-${item.id}">
+        <div class="card-body-inner">${item.body}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleCard(id) {
+  const card = document.getElementById('card-' + id);
+  const body = document.getElementById('body-' + id);
+  const isOpen = card.classList.contains('open');
+  if (isOpen) {
+    card.classList.remove('open');
+    body.style.maxHeight = null;
+  } else {
+    card.classList.add('open');
+    body.style.maxHeight = body.scrollHeight + 'px';
+    // re-measure after fonts/images settle
+    setTimeout(() => { if (card.classList.contains('open')) body.style.maxHeight = body.scrollHeight + 'px'; }, 200);
+  }
+}
+
+function toggleSub(el) {
+  const sub = el.parentElement;
+  const body = sub.querySelector('.subtoggle-body');
+  const isOpen = sub.classList.contains('open');
+  if (isOpen) {
+    sub.classList.remove('open');
+    body.style.maxHeight = null;
+  } else {
+    sub.classList.add('open');
+    body.style.maxHeight = body.scrollHeight + 'px';
+  }
+  // grow parent card too
+  let parentBody = el.closest('.card-body');
+  if (parentBody && parentBody.style.maxHeight) {
+    setTimeout(() => { parentBody.style.maxHeight = parentBody.scrollHeight + 'px'; }, 320);
+  }
+}
+
+document.getElementById('filters').addEventListener('click', (e) => {
+  if (!e.target.classList.contains('filter-btn')) return;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  const f = e.target.dataset.filter;
+  const filtered = f === 'all' ? DATA : DATA.filter(d => d.type === f);
+  render(filtered);
+});
+
+render(DATA);
+</script>
+</body>
+</html>
