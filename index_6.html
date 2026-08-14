@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Esten — Roteiros de Conteúdo</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root {
+    --olive: #6B6F4C;
+    --olive-dark: #4E5238;
+    --olive-pale: #F1F1E9;
+    --terracotta: #B4622E;
+    --terracotta-pale: #F3E4D8;
+    --cream: #FBF9F4;
+    --paper: #FFFFFF;
+    --ink: #2A2A22;
+    --ink-soft: #6B6A5E;
+    --line: #E4E1D3;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 64px 28px 120px;
+  }
+
+  /* ---- Nav ---- */
+  .nav {
+    position: sticky; top: 0; z-index: 20;
+    background: rgba(251,249,244,0.92);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner {
+    max-width: 860px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 28px;
+  }
+  .nav-logo { font-family: 'Fraunces', serif; font-size: 17px; font-weight: 600; color: var(--olive-dark); }
+  .nav-logo span { color: var(--terracotta); }
+  .nav-links { display: flex; gap: 6px; }
+  .nav-link {
+    font-size: 13px; font-weight: 500; color: var(--ink-soft);
+    text-decoration: none; padding: 7px 14px; border-radius: 8px;
+    transition: all .15s ease;
+  }
+  .nav-link:hover { background: var(--olive-pale); color: var(--olive-dark); }
+  .nav-link.active { background: var(--olive-dark); color: var(--cream); }
+
+  /* ---- Header ---- */
+  .eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 42px;
+    line-height: 1.1;
+    margin: 0 0 12px;
+    color: var(--olive-dark);
+  }
+
+  .subtitle {
+    font-size: 16px;
+    color: var(--ink-soft);
+    max-width: 520px;
+    line-height: 1.6;
+    margin: 0 0 40px;
+  }
+
+  .meta-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 44px;
+  }
+  .meta-pill {
+    font-size: 12.5px;
+    padding: 6px 13px;
+    border-radius: 100px;
+    background: var(--olive-pale);
+    color: var(--olive-dark);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .meta-pill.terra { background: var(--terracotta-pale); color: var(--terracotta); }
+
+  /* ---- Filter bar ---- */
+  .filters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+  }
+  .filter-btn {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all .15s ease;
+  }
+  .filter-btn:hover { border-color: var(--olive); color: var(--olive-dark); }
+  .filter-btn.active {
+    background: var(--olive-dark);
+    border-color: var(--olive-dark);
+    color: var(--cream);
+  }
+
+  /* ---- Card / accordion item ---- */
+  .card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: border-color .2s ease;
+  }
+  .card.open { border-color: var(--olive); }
+  .card.posted { border-left: 3px solid var(--olive); }
+
+  .card-head {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 20px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .card-head:hover { background: var(--olive-pale); }
+
+  .chevron {
+    flex: 0 0 20px;
+    width: 20px; height: 20px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--olive);
+    transition: transform .25s ease;
+  }
+  .card.open .chevron { transform: rotate(90deg); }
+
+  .num-badge {
+    flex: 0 0 auto;
+    font-family: 'Fraunces', serif;
+    font-size: 13px;
+    color: var(--terracotta);
+    background: var(--terracotta-pale);
+    width: 30px; height: 30px;
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600;
+  }
+
+  .head-text { flex: 1; min-width: 0; }
+  .head-title {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--ink);
+    margin: 0 0 3px;
+  }
+  .head-sub {
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .tag {
+    font-size: 11px;
+    padding: 2px 9px;
+    border-radius: 100px;
+    background: var(--olive-pale);
+    color: var(--olive-dark);
+    font-weight: 600;
+    letter-spacing: .02em;
+  }
+  .tag.func {
+    background: var(--terracotta-pale);
+    color: var(--terracotta);
+  }
+  .tag.status-posted {
+    background: var(--olive-dark);
+    color: var(--cream);
+  }
+  .tag.status-togo {
+    background: transparent;
+    color: var(--ink-soft);
+    border: 1px solid var(--line);
+  }
+  .tag.status-recorded {
+    background: var(--olive-pale);
+    color: var(--olive-dark);
+  }
+  .tag.status-edited {
+    background: var(--terracotta-pale);
+    color: var(--terracotta);
+  }
+  .status-pill {
+    cursor: pointer;
+    transition: transform .1s ease, opacity .15s ease;
+  }
+  .status-pill:hover { opacity: .8; }
+  .status-pill:active { transform: scale(.96); }
+
+  .tag.new-badge {
+    background: #E8D9C4;
+    color: #7A4A1E;
+    font-weight: 700;
+  }
+
+  .card-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .35s ease;
+  }
+  .card-body-inner {
+    padding: 4px 20px 28px 66px;
+    border-top: 1px solid var(--line);
+    margin-top: 0;
+  }
+
+  /* ---- Inner content typography ---- */
+  .block { margin-top: 22px; }
+  .block:first-child { margin-top: 24px; }
+  .block-label {
+    font-size: 11.5px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .block p {
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: var(--ink);
+    margin: 0 0 8px;
+  }
+  .block ul { margin: 0; padding-left: 18px; }
+  .block li {
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .quote-line {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--olive-dark);
+    border-left: 3px solid var(--olive);
+    padding-left: 14px;
+    margin: 6px 0;
+    line-height: 1.5;
+  }
+
+  /* Scene table */
+  .scene {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    background: var(--cream);
+  }
+  .scene-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--olive-dark);
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .scene-time { font-size: 11.5px; color: var(--ink-soft); font-weight: 500; }
+  .scene-row { display: flex; gap: 8px; margin-bottom: 6px; font-size: 13.5px; line-height: 1.55; }
+  .scene-row .k { flex: 0 0 78px; color: var(--ink-soft); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; padding-top: 1px; }
+  .scene-row .v { flex: 1; color: var(--ink); }
+
+  /* option cards (for open-ended / choose-one scripts) */
+  .option-card {
+    border: 1px solid var(--line); border-radius: 8px;
+    padding: 14px 16px; margin-bottom: 10px; background: var(--cream);
+  }
+  .option-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--terracotta); margin-bottom: 6px; }
+  .option-title { font-family: 'Fraunces', serif; font-size: 14.5px; color: var(--olive-dark); margin-bottom: 6px; font-weight: 500; }
+  .option-card p { font-size: 13.5px; line-height: 1.6; margin: 0; }
+
+  .format-note {
+    background: var(--olive-pale); border-radius: 8px; padding: 14px 16px; margin: 12px 0;
+    font-size: 13.5px; color: var(--olive-dark); line-height: 1.6; font-style: italic;
+  }
+
+  /* do/dont */
+  .dodont { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 8px; }
+  @media (max-width: 640px) { .dodont { grid-template-columns: 1fr; } }
+  .dd-col { border-radius: 8px; padding: 14px 16px; }
+  .dd-col.no { background: #F7ECE8; }
+  .dd-col.yes { background: var(--olive-pale); }
+  .dd-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 8px; }
+  .dd-col.no .dd-title { color: #A24B33; }
+  .dd-col.yes .dd-title { color: var(--olive-dark); }
+  .dd-col ul { padding-left: 16px; margin: 0; }
+  .dd-col li { font-size: 13px; line-height: 1.6; margin-bottom: 4px; }
+
+  /* technical shoot specs */
+  .shoot-specs {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+    margin: 10px 0 4px;
+  }
+  @media (max-width: 640px) { .shoot-specs { grid-template-columns: 1fr 1fr; } }
+  .spec-card {
+    background: var(--paper); border: 1px solid var(--line); border-radius: 8px;
+    padding: 10px 12px;
+  }
+  .spec-label { font-size: 10px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-soft); font-weight: 700; margin-bottom: 3px; }
+  .spec-value { font-size: 12.5px; color: var(--ink); font-weight: 600; line-height: 1.4; }
+
+  .step-list { counter-reset: shotstep; margin-top: 10px; }
+  .step-item {
+    display: flex; gap: 10px; margin-bottom: 10px; padding-bottom: 10px;
+    border-bottom: 1px dotted var(--line);
+  }
+  .step-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .step-num {
+    counter-increment: shotstep;
+    flex: 0 0 22px; height: 22px; border-radius: 6px; background: var(--olive-pale);
+    color: var(--olive-dark); font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .step-num::before { content: counter(shotstep); }
+  .step-text { flex: 1; font-size: 13.5px; color: var(--ink); line-height: 1.6; }
+  .step-text strong { color: var(--olive-dark); }
+
+  /* toggle sub-section (nested notion toggle) */
+  .subtoggle { border-top: 1px dashed var(--line); margin-top: 18px; padding-top: 4px; }
+  .subtoggle-head {
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer; padding: 10px 0;
+    font-size: 13px; font-weight: 600; color: var(--olive-dark);
+  }
+  .subtoggle-head .mini-chevron { font-size: 10px; transition: transform .2s ease; color: var(--olive); }
+  .subtoggle.open .mini-chevron { transform: rotate(90deg); }
+  .subtoggle-body { max-height: 0; overflow: hidden; transition: max-height .3s ease; }
+  .subtoggle-body-inner { padding-bottom: 10px; padding-top: 4px; }
+
+  .client-note {
+    background: var(--terracotta-pale);
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin-top: 8px;
+  }
+  .client-note p {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 14.5px;
+    color: #7A3E1E;
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  .cta-box {
+    background: var(--olive-dark);
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin-top: 8px;
+  }
+  .cta-box p { color: var(--cream); margin: 0 0 6px; font-size: 14px; line-height: 1.6; }
+  .cta-box p:last-child { margin-bottom: 0; }
+  .cta-box .prod-name { font-weight: 700; color: #E8D9C4; }
+
+  footer {
+    text-align: center;
+    margin-top: 60px;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <div class="nav-inner">
+    <div class="nav-logo">Leiv<span>adz</span> × Esten</div>
+    <div class="nav-links">
+      <a class="nav-link" href="sistema-editorial.html">Sistema Editorial</a>
+      <a class="nav-link active" href="index.html">Roteiros de Conteúdo</a>
+      <a class="nav-link" href="stories.html">Stories</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap" style="padding-top: 40px;">
+
+  <div class="eyebrow">Leivadz × Esten</div>
+  <h1>Roteiros de conteúdo</h1>
+  <p class="subtitle">Peças pensadas pra gerar conexão real com quem compra — e fechar em venda, sem parecer vitrine. Clique em cada card para abrir o roteiro completo.</p>
+
+  <div class="meta-row">
+    <div class="meta-pill">📅 Ciclo atual</div>
+    <div class="meta-pill terra">🎯 Objetivo: vender peças paradas via Instagram</div>
+    <div class="meta-pill">👤 Protagonista: Hosana + clientes reais</div>
+  </div>
+
+  <div class="filters" id="filters">
+    <button class="filter-btn active" data-filter="all">Todos</button>
+    <button class="filter-btn" data-filter="reel">Reels</button>
+    <button class="filter-btn" data-filter="carrossel">Carrossel</button>
+    <button class="filter-btn" data-filter="posted">Já postados</button>
+    <button class="filter-btn" data-filter="togo">A gravar</button>
+  </div>
+
+  <div id="cards"></div>
+
+  <footer>Esten — roteiro vivo, ajustável conforme a rotina real do dia de gravação.</footer>
+</div>
+
+<script>
+const DATA = [
+  {
+    id: 1,
+    type: "reel",
+    typeLabel: "Reel",
+    status: "posted",
+    title: "Coisas que aprendi trabalhando com moda #01",
+    format: "Conteúdo educativo — voz da fundadora",
+    body: `
+      <div class="block">
+        <div class="block-label">Objetivo</div>
+        <p>Gerar autoridade, fortalecer a percepção de valor das peças da Esten e ensinar a audiência a desenvolver um olhar mais criterioso na hora de escolher uma roupa.</p>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Ideia central</div>
+        <p>Ao longo dos anos trabalhando com moda, algumas percepções mudaram completamente a forma como a fundadora escolhe suas próprias roupas. Neste primeiro episódio, ela compartilha um desses aprendizados — como pequenos detalhes, muitas vezes ignorados, influenciam muito mais a experiência de uso do que só a aparência da peça.</p>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Roteiro completo</div>
+
+        <div class="scene">
+          <div class="scene-title">Cena 1 — Gancho</div>
+          <div class="scene-row"><div class="k">Vídeo</div><div class="v">Fundadora falando direto pra câmera; imagens de diferentes peças entram durante a fala.</div></div>
+          <div class="scene-row"><div class="k">Falado</div><div class="v">"Coisas que aprendi trabalhando com moda e que mudaram a forma como eu escolho minhas roupas. Parece simples, mas depois que eu comecei a reparar nisso, nunca mais consegui escolher uma roupa do mesmo jeito."</div></div>
+        </div>
+
+        <div class="scene">
+          <div class="scene-title">Cena 2 — Tecido</div>
+          <div class="scene-row"><div class="k">Vídeo</div><div class="v">Close em diferentes tecidos; a fundadora toca o tecido enquanto fala.</div></div>
+          <div class="scene-row"><div class="k">Falado</div><div class="v">"Antes eu comprava uma roupa porque ela era bonita. Hoje eu quero saber como ela vai me acompanhar durante o dia. E tudo começa pelo tecido — é ele que influencia no toque, no movimento e na sensação de conforto horas depois de vestir a peça."</div></div>
+        </div>
+
+        <div class="scene">
+          <div class="scene-title">Cena 3 — Modelagem</div>
+          <div class="scene-row"><div class="k">Vídeo</div><div class="v">Detalhes da modelagem; peça no cabide e, se possível, em movimento no corpo.</div></div>
+          <div class="scene-row"><div class="k">Falado</div><div class="v">"Outra coisa que mudou meu olhar foi entender que uma roupa bonita no cabide não garante um bom caimento. É a modelagem que faz você se sentir confortável, segura e elegante ao longo da rotina."</div></div>
+        </div>
+
+        <div class="scene">
+          <div class="scene-title">Cena 4 — Acabamento</div>
+          <div class="scene-row"><div class="k">Vídeo</div><div class="v">Close em costuras, barras, acabamentos e detalhes internos.</div></div>
+          <div class="scene-row"><div class="k">Falado</div><div class="v">"E tem um detalhe que quase ninguém observa, mas eu sempre olho: os acabamentos. Eles não chamam atenção na vitrine, mas fazem diferença no tempo que essa roupa continua bonita e no prazer de vestir ela de novo."</div></div>
+        </div>
+
+        <div class="scene">
+          <div class="scene-title">Cena 5 — Fechamento</div>
+          <div class="scene-row"><div class="k">Vídeo</div><div class="v">Peças em uso, detalhes da loja, closes finais.</div></div>
+          <div class="scene-row"><div class="k">Falado</div><div class="v">"Hoje eu percebo que escolher uma roupa não é só gostar dela. É entender se ela vai fazer sentido para a vida que eu levo. E acho que esse foi um dos maiores aprendizados que a moda me deu."</div></div>
+          <div class="scene-row"><div class="k">Texto na tela</div><div class="v">O que mudou a forma como você escolhe suas roupas?</div></div>
+        </div>
+      </div>
+
+      <div class="subtoggle">
+        <div class="subtoggle-head" onclick="toggleSub(this)"><span class="mini-chevron">▶</span> Direção de gravação</div>
+        <div class="subtoggle-body"><div class="subtoggle-body-inner">
+          <div class="shoot-specs">
+            <div class="spec-card"><div class="spec-label">Duração</div><div class="spec-value">25-30s</div></div>
+            <div class="spec-card"><div class="spec-label">Formato</div><div class="spec-value">9:16 vertical</div></div>
+            <div class="spec-card"><div class="spec-label">Quem grava</div><div class="spec-value">Hosana + 1 pessoa na câmera</div></div>
+            <div class="spec-card"><div class="spec-label">Local</div><div class="spec-value">Loja, luz natural</div></div>
+          </div>
+          <div class="dodont">
+            <div class="dd-col no"><div class="dd-title">Evitar</div><ul>
+              <li>Tom professoral</li>
+              <li>Apressar a narração</li>
+              <li>Mostrar detalhes sem relacionar à experiência de uso</li>
+            </ul></div>
+            <div class="dd-col yes"><div class="dd-title">Priorizar</div><ul>
+              <li>Conversar como quem compartilha algo aprendido com o tempo</li>
+              <li>Pequenas pausas pra imagem complementar a narrativa</li>
+              <li>Ilustrar visualmente cada ponto mencionado</li>
+            </ul></div>
+          </div>
+        </div></div>
+      </div>
+
+      <div class="cta-box">
+        <p><strong>CTA:</strong> Conta aqui nos comentários: tem algum detalhe que você sempre observa antes de comprar uma peça?</p>
+      </div>
+    `
+  },
+  {
+    id: 2,
+    type: "reel",
+    typeLabel: "Reel",
+    status: "posted",
+    title: "POV: você começou a reparar nos detalhes antes de comprar uma roupa",
+    format: "POV contemplativo",
+    body: `
+      <div class="block">
+        <div class="block-label">Objetivo</div>
+        <p>Gerar percepção de valor, desejo e fortalecer o posicionamento da marca por meio de uma narrativa visual minimalista.</p>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Ideia central</div>
+        <p>Um vídeo contemplativo que convida a audiência a observar uma roupa com um novo olhar. Uma única frase permanece fixa na tela enquanto diferentes detalhes da peça são apresentados — sem transformar o conteúdo em apresentação de produto.</p>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Roteiro completo</div>
+        <div class="scene">
+          <div class="scene-title">Cena única <span class="scene-time">0s – 7s</span></div>
+          <div class="scene-row"><div class="k">Texto fixo</div><div class="v">POV: Você começou a reparar nos detalhes antes de comprar uma roupa.</div></div>
+          <div class="scene-row"><div class="k">Sequência</div><div class="v">Close na textura do tecido → movimento do tecido ao ser manuseado → detalhe da gola → botões → costura → caimento no cabide → movimento em plano aberto.</div></div>
+        </div>
+      </div>
+
+      <div class="subtoggle">
+        <div class="subtoggle-head" onclick="toggleSub(this)"><span class="mini-chevron">▶</span> Direção de gravação</div>
+        <div class="subtoggle-body"><div class="subtoggle-body-inner">
+          <div class="shoot-specs">
+            <div class="spec-card"><div class="spec-label">Duração</div><div class="spec-value">6-7s</div></div>
+            <div class="spec-card"><div class="spec-label">Formato</div><div class="spec-value">9:16 vertical</div></div>
+            <div class="spec-card"><div class="spec-label">Quem grava</div><div class="spec-value">1 pessoa, sozinha</div></div>
+            <div class="spec-card"><div class="spec-label">Local</div><div class="spec-value">Loja, luz natural</div></div>
+          </div>
+          <div class="dodont">
+            <div class="dd-col no"><div class="dd-title">Evitar</div><ul>
+              <li>Movimentos rápidos de câmera</li>
+              <li>Excesso de cortes</li>
+              <li>Muitas peças diferentes no mesmo vídeo</li>
+            </ul></div>
+            <div class="dd-col yes"><div class="dd-title">Priorizar</div><ul>
+              <li>Closes, movimentos lentos</li>
+              <li>Luz natural</li>
+              <li>Estética limpa e sofisticada</li>
+            </ul></div>
+          </div>
+          <p style="margin-top:10px;">Frase fixa a narração inteira; sem legendas adicionais. Música instrumental elegante pode conduzir a narrativa.</p>
+        </div></div>
+      </div>
+
+      <div class="subtoggle">
+        <div class="subtoggle-head" onclick="toggleSub(this)"><span class="mini-chevron">▶</span> Legenda</div>
+        <div class="subtoggle-body"><div class="subtoggle-body-inner">
+          <p>Depois que você percebe isso, fica difícil comprar roupa do mesmo jeito. Com o tempo, você deixa de olhar apenas para a cor ou para o modelo. Começa a reparar no tecido, no caimento, nos acabamentos e em detalhes que fazem diferença muito depois da compra.</p>
+          <p>São essas pequenas escolhas que transformam a experiência de vestir uma peça. Acesse nosso site e veja de perto as peças que unem elegância, qualidade e cuidado em cada detalhe.</p>
+        </div></div>
+      </div>
+    `
+  },
+  {
+    id: 3,
+    type: "reel",
+    typeLabel: "Reel",
+    status: "togo",
+    title: "Um dia na vida de uma peça recém-saída da loja",
+    format: "Mini-vlog narrado pela peça",
+    body: `
+      <div class="block">
+        <div class="block-label">Objetivo</div>
+        <ul>
+          <li>Gerar identificação com a rotina real de quem compra</li>
+          <li>Despertar desejo através de prova de uso</li>
+          <li>Criar conexão com o público profissional</li>
+          <li>Aumentar interesse pelo produto sem parecer propaganda</li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Ideia central</div>
+        <p>Acompanhamos o primeiro dia de uma peça depois que ela sai da Esten e chega à rotina da sua nova dona. <strong>A peça narra o próprio dia.</strong> Não é propaganda de roupa — é um vlog sobre o destino de uma peça.</p>
+        <div class="quote-line">Eu estava na loja → alguém me escolheu → saí → descobri quem era minha nova dona → acompanhei o dia dela.</div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Roteiro completo</div>
+
+        <div class="scene">
+          <div class="scene-title">Título na tela <span class="scene-time">0s – 2s</span></div>
+          <div class="scene-row"><div class="k">Texto</div><div class="v">Um dia na vida de uma peça recém-saída da loja</div></div>
+          <div class="scene-row"><div class="k">Cena</div><div class="v">A peça sendo retirada da arara ou sendo embalada.</div></div>
+          <div class="scene-row"><div class="k">Narração</div><div class="v">"Hoje foi meu último dia na Esten." <em>(corte rápido — esse é o gancho)</em></div></div>
+        </div>
+
+        <div class="scene">
+          <div class="scene-title">Cena 2 — A escolha <span class="scene-time">2s – 6s</span></div>
+          <div class="scene-row"><div class="k">Imagens</div><div class="v">Cliente entrando, olhando as peças, tocando no tecido, escolhendo, experimentando.</div></div>
+          <div class="scene-row"><div class="k">Narração</div><div class="v">"Depois de alguns dias esperando alguém me escolher… Finalmente aconteceu."</div></div>
+        </div>
+
+        <div class="scene">
+          <div class="scene-title">Cena 3 — A saída <span class="scene-time">6s – 10s</span></div>
+          <div class="scene-row"><div class="k">Imagens</div><div class="v">Peça sendo dobrada, embalagem, sacola, cliente saindo da loja.</div></div>
+          <div class="scene-row"><div class="k">Narração</div><div class="v">"Eu ainda não sabia exatamente para onde estava indo."</div></div>
+        </div>
+
+        <div class="scene">
+          <div class="scene-title">Cena 4 — A nova dona <span class="scene-time">10s – 14s</span></div>
+          <div class="scene-row"><div class="k">Imagens</div><div class="v">Cliente se arrumando: colocando a peça, ajustando a manga, pegando a bolsa, saindo.</div></div>
+          <div class="scene-row"><div class="k">Narração</div><div class="v">"Mas descobri rápido. Minha nova dona é a Dra. [Nome]."</div></div>
+        </div>
+
+        <div class="scene">
+          <div class="scene-title">Cena 5 — A rotina <span class="scene-time">14s – 25s</span></div>
+          <div class="scene-row"><div class="k">Imagens</div><div class="v">A Dra. chegando ao trabalho, entrando no consultório, atendendo, trabalhando, andando, tomando café, em movimento.</div></div>
+          <div class="scene-row"><div class="k">Narração</div><div class="v">"Hoje, acompanhei a Dra. [Nome] em mais um dia de trabalho. Entre consultas, decisões… e uma rotina que não costuma parar."</div></div>
+          <div class="scene-row"><div class="k">Atenção</div><div class="v">Não vire um vídeo sobre a profissão — ela é o contexto. O protagonista continua sendo a peça descobrindo a rotina.</div></div>
+        </div>
+
+        <div class="scene">
+          <div class="scene-title">Cena 6 — Fechamento <span class="scene-time">25s – 30s</span></div>
+          <div class="scene-row"><div class="k">Imagem</div><div class="v">Plano bonito da cliente usando a peça — andando, trabalhando ou em momento natural.</div></div>
+          <div class="scene-row"><div class="k">Narração</div><div class="v">"Parece que encontrei um bom lugar."</div></div>
+          <div class="scene-row"><div class="k">Texto na tela</div><div class="v">Qual seria o destino dessa peça na sua rotina?</div></div>
+        </div>
+
+        <div class="scene">
+          <div class="scene-title">Cena 7 — Produto <span class="scene-time">30s – 33s</span></div>
+          <div class="scene-row"><div class="k">Tela final</div><div class="v">[Nome da peça] — Esten. Disponível no site.</div></div>
+        </div>
+      </div>
+
+      <div class="subtoggle">
+        <div class="subtoggle-head" onclick="toggleSub(this)"><span class="mini-chevron">▶</span> Direção de gravação</div>
+        <div class="subtoggle-body"><div class="subtoggle-body-inner">
+          <div class="shoot-specs">
+            <div class="spec-card"><div class="spec-label">Duração total</div><div class="spec-value">~33s</div></div>
+            <div class="spec-card"><div class="spec-label">Dias de gravação</div><div class="spec-value">2 (loja + rotina)</div></div>
+            <div class="spec-card"><div class="spec-label">Quem precisa</div><div class="spec-value">Cliente disponível p/ rotina</div></div>
+            <div class="spec-card"><div class="spec-label">Equipamento</div><div class="spec-value">Celular, sem tripé fixo</div></div>
+          </div>
+          <div class="step-list">
+            <div class="step-item"><div class="step-num"></div><div class="step-text"><strong>Bloco 1 (na loja, ~10 min):</strong> captar peça na arara, sendo retirada/embalada, cliente escolhendo e experimentando — pode ser gravado com qualquer cliente real que compre naquele dia.</div></div>
+            <div class="step-item"><div class="step-num"></div><div class="step-text"><strong>Bloco 2 (na rotina, dia separado):</strong> combinar previamente com a cliente/Dra. um período de 20-30 min da rotina dela pra acompanhar com celular — chegando ao trabalho, em movimento, um momento de pausa (café).</div></div>
+            <div class="step-item"><div class="step-num"></div><div class="step-text">Câmera sempre acompanhando, nunca parada esperando pose — o efeito de vlog vem do movimento natural, não de still.</div></div>
+            <div class="step-item"><div class="step-num"></div><div class="step-text">Narração é gravada depois, em áudio separado, sincronizada na edição — não precisa gravar voz no set.</div></div>
+          </div>
+          <div class="dodont">
+            <div class="dd-col no"><div class="dd-title">Evitar</div><ul>
+              <li>Modelo parada posando</li>
+              <li>Sequência de fotos bonitas</li>
+              <li>Excesso de slow motion</li>
+              <li>Música emocional</li>
+            </ul></div>
+            <div class="dd-col yes"><div class="dd-title">Priorizar</div><ul>
+              <li>Câmera acompanhando</li>
+              <li>Cenas espontâneas</li>
+              <li>Transições simples, cortes rápidos</li>
+            </ul></div>
+          </div>
+        </div></div>
+      </div>
+
+      <div class="subtoggle">
+        <div class="subtoggle-head" onclick="toggleSub(this)"><span class="mini-chevron">▶</span> Lista de captação</div>
+        <div class="subtoggle-body"><div class="subtoggle-body-inner">
+          <p style="font-size:13px;font-weight:600;color:var(--olive-dark);margin-bottom:4px;">Na loja</p>
+          <ul><li>Peça na arara</li><li>Detalhe do tecido</li><li>Cliente escolhendo</li><li>Prova</li><li>Embalagem</li><li>Saída</li></ul>
+          <p style="font-size:13px;font-weight:600;color:var(--olive-dark);margin:12px 0 4px;">Na rotina</p>
+          <ul><li>Cliente se arrumando</li><li>Colocando a peça</li><li>Chegando ao trabalho</li><li>Usando a peça</li><li>Cenas da rotina</li><li>Plano final</li></ul>
+        </div></div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Explicação para a cliente</div>
+        <div class="client-note"><p>"A ideia é criar um mini-vlog da peça. A gente acompanha o primeiro dia dela depois que sai da loja: ela é escolhida, vai para a casa da nova dona e depois acompanha a rotina dela. A própria peça narra o que está acontecendo. Assim, mostramos o produto em uso real sem fazer um vídeo tradicional de venda."</p></div>
+      </div>
+
+      <div class="cta-box">
+        <p><strong>Nome interno do formato:</strong> Vlog da Peça — se o piloto funcionar, vira série da Esten.</p>
+        <p><strong>CTA:</strong> Qual seria o destino dessa peça na sua rotina? &nbsp;·&nbsp; <span class="prod-name">[Nome da peça] — disponível no site</span></p>
+      </div>
+    `
+  },
+  {
+    id: 4,
+    type: "carrossel",
+    typeLabel: "Carrossel",
+    status: "togo",
+    title: "Uma peça. Diferentes momentos.",
+    format: "Estética de flagrante — protagonizado pela Hosana",
+    body: `
+      <div class="block">
+        <div class="block-label">Objetivo</div>
+        <p>Mostrar, por meio de flagrantes reais, como uma única peça acompanha diferentes momentos do dia. A versatilidade não é explicada: é percebida naturalmente pela repetição da mesma peça em contextos diferentes.</p>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Ideia central</div>
+        <p>Não é um roteiro fechado, cena por cena — um dia real não segue roteiro. A ideia é escolher uma peça central e, ao longo de um dia comum da Hosana, registrar momentos espontâneos, sem criar situações artificiais. O texto de cada slide fala do momento vivido, nunca da roupa.</p>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Por que vale a pena</div>
+        <p>Em vez de dizer que a peça é versátil, o conteúdo deixa a audiência chegar sozinha a essa conclusão. Isso aproxima a marca da realidade da cliente, fortalece o posicionamento premium e reduz a sensação de vitrine.</p>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Slide 1 — Capa</div>
+        <div class="scene">
+          <div class="scene-row"><div class="k">Foto</div><div class="v">Hosana saindo de casa, fechando a porta ou pegando as chaves.</div></div>
+          <div class="scene-row"><div class="k">Texto</div><div class="v">E se uma única peça acompanhasse todo o seu dia? Do primeiro ao último compromisso do dia.</div></div>
+        </div>
+      </div>
+
+      <div class="subtoggle">
+        <div class="subtoggle-head" onclick="toggleSub(this)"><span class="mini-chevron">▶</span> Momentos para captar (sugestões, não slides fixos)</div>
+        <div class="subtoggle-body"><div class="subtoggle-body-inner">
+          <p style="font-size:13px;font-weight:600;color:var(--olive-dark);margin-bottom:4px;">Manhã</p>
+          <ul><li>Saindo de casa / fechando a porta / pegando as chaves</li><li>Café na mão</li><li>Chegando ao trabalho / entrando na loja</li></ul>
+          <p style="font-size:13px;font-weight:600;color:var(--olive-dark);margin:12px 0 4px;">Durante o trabalho</p>
+          <ul><li>Atendendo cliente / organizando peças</li><li><em>Mudanças naturais:</em> blazer retirado, mangas dobradas</li></ul>
+          <p style="font-size:13px;font-weight:600;color:var(--olive-dark);margin:12px 0 4px;">Fim da tarde / Noite</p>
+          <ul><li>Saindo do trabalho, jantar, encontro com amigas</li><li><em>Mudanças naturais:</em> luz mais quente, acessório trocado</li></ul>
+        </div></div>
+      </div>
+
+      <div class="subtoggle">
+        <div class="subtoggle-head" onclick="toggleSub(this)"><span class="mini-chevron">▶</span> Sugestão de narrativa dos slides</div>
+        <div class="subtoggle-body"><div class="subtoggle-body-inner">
+          <ul>
+            <li><strong>Slide 1:</strong> E se uma única peça acompanhasse todo o seu dia? Do primeiro ao último compromisso do dia.</li>
+            <li><strong>Slide 2:</strong> Tem dias que começam cedo.</li>
+            <li><strong>Slide 3:</strong> E quase nunca seguem exatamente como planejamos.</li>
+            <li><strong>Slide 4:</strong> Entre um compromisso e outro, um respiro.</li>
+            <li><strong>Slide 5:</strong> O expediente termina. O dia, não.</li>
+            <li><strong>Slide 6:</strong> Porque alguns dos melhores momentos acontecem depois do trabalho.</li>
+            <li><strong>Slide 7:</strong> Quando uma roupa acompanha o seu ritmo, você só precisa viver o dia.</li>
+            <li><strong>Slide 8:</strong> Essa peça acompanhou um dia inteiro. Conheça a [Nome da peça] no site da Esten.</li>
+          </ul>
+        </div></div>
+      </div>
+
+      <div class="subtoggle">
+        <div class="subtoggle-head" onclick="toggleSub(this)"><span class="mini-chevron">▶</span> Direção de gravação</div>
+        <div class="subtoggle-body"><div class="subtoggle-body-inner">
+          <div class="shoot-specs">
+            <div class="spec-card"><div class="spec-label">Formato</div><div class="spec-value">7-8 slides, 4:5</div></div>
+            <div class="spec-card"><div class="spec-label">Duração da captação</div><div class="spec-value">1 dia inteiro</div></div>
+            <div class="spec-card"><div class="spec-label">Quem grava</div><div class="spec-value">Hosana + celular sempre à mão</div></div>
+            <div class="spec-card"><div class="spec-label">Equipamento</div><div class="spec-value">Só celular, sem tripé</div></div>
+          </div>
+          <div class="step-list">
+            <div class="step-item"><div class="step-num"></div><div class="step-text">Não é um dia de produção — é um dia normal em que alguém (Hosana ou quem estiver com ela) tira uma foto rápida a cada momento-chave, sem parar a rotina.</div></div>
+            <div class="step-item"><div class="step-num"></div><div class="step-text">Definir a peça central pela manhã e vestir ela o dia inteiro, sem trocar.</div></div>
+            <div class="step-item"><div class="step-num"></div><div class="step-text">Tirar entre 8-10 fotos ao longo do dia (mais do que precisa) pra escolher as melhores 7 na edição.</div></div>
+            <div class="step-item"><div class="step-num"></div><div class="step-text">Preferir luz natural de cada horário — não usar flash ou iluminação artificial, é isso que cria a sensação de passagem real do tempo.</div></div>
+          </div>
+          <div class="dodont">
+            <div class="dd-col no"><div class="dd-title">Evitar</div><ul>
+              <li>Parar a rotina pra montar cenas</li>
+              <li>Poses ou olhares fixos pra câmera</li>
+              <li>Still de produto isolado</li>
+            </ul></div>
+            <div class="dd-col yes"><div class="dd-title">Priorizar</div><ul>
+              <li>Momentos espontâneos enquanto a rotina acontece</li>
+              <li>Luz natural de cada horário</li>
+              <li>Pequenas imperfeições e expressões naturais</li>
+            </ul></div>
+          </div>
+        </div></div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Explicação para a Hosana</div>
+        <div class="client-note"><p>"Você vive um dia normal, e nós registramos pequenos momentos da sua rotina conforme eles acontecem. Não é uma sessão de fotos — é acompanhar situações reais de forma leve."</p></div>
+      </div>
+
+      <div class="cta-box">
+        <p><strong>Legenda:</strong> Essa peça aguentou meu dia inteiro. Confira se ela aguenta o seu — no site.</p>
+        <p><span class="prod-name">[Nome da peça] — Esten</span></p>
+      </div>
+    `
+  },
+  {
+    id: 5,
+    isNew: true,
+    type: "reel",
+    typeLabel: "Reel",
+    status: "togo",
+    func: "Aparência",
+    title: "5 coisas simples que fazem uma mulher parecer MUITO mais elegante",
+    format: "Hosana falando pra câmera + fotos/vídeos de apoio",
+    body: `
+      <div class="block">
+        <div class="block-label">Objetivo</div>
+        <p>Alcance e descoberta. Conteúdo de percepção visual, com estrutura simples e altamente compartilhável.</p>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Ideia central</div>
+        <p>A mulher não quer "um blazer preto" — ela quer parecer segura numa reunião. A lista nomeia detalhes reais, e a marca só aparece no fechamento, como consequência da reflexão.</p>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Roteiro completo</div>
+        <div class="scene">
+          <div class="scene-title">Gancho <span class="scene-time">0s – 2s</span></div>
+          <div class="scene-row"><div class="k">Falado</div><div class="v">Hosana, olhando pra câmera: "5 coisas simples que fazem uma mulher parecer MUITO mais elegante."</div></div>
+        </div>
+        <div class="scene">
+          <div class="scene-title">1. Caimento</div>
+          <div class="scene-row"><div class="k">Falado</div><div class="v">"Uma roupa não precisa ser justa. Ela precisa parecer que foi feita para o seu corpo."</div></div>
+          <div class="scene-row"><div class="k">Insert</div><div class="v">Foto/vídeo de um look com bom caimento.</div></div>
+        </div>
+        <div class="scene">
+          <div class="scene-title">2. Terceira peça</div>
+          <div class="scene-row"><div class="k">Falado</div><div class="v">"Um blazer, um lenço, um cinto... uma terceira peça organiza o look inteiro."</div></div>
+          <div class="scene-row"><div class="k">Insert</div><div class="v">Exemplo visual.</div></div>
+        </div>
+        <div class="scene">
+          <div class="scene-title">3. Proporção</div>
+          <div class="scene-row"><div class="k">Falado</div><div class="v">"Se tudo é volumoso, nada tem destaque. Elegância também está no equilíbrio."</div></div>
+          <div class="scene-row"><div class="k">Insert</div><div class="v">Exemplo de proporção.</div></div>
+        </div>
+        <div class="scene">
+          <div class="scene-title">4. Acabamento</div>
+          <div class="scene-row"><div class="k">Falado</div><div class="v">"Roupa amassada, manga mal posicionada, barra errada... pequenos detalhes mudam a percepção inteira."</div></div>
+          <div class="scene-row"><div class="k">Insert</div><div class="v">Detalhes de uma peça/look.</div></div>
+        </div>
+        <div class="scene">
+          <div class="scene-title">5. Coerência</div>
+          <div class="scene-row"><div class="k">Falado</div><div class="v">"E a mais importante: a roupa precisa conversar com a mulher que você é, não com a mulher que você acha que deveria parecer."</div></div>
+          <div class="scene-row"><div class="k">Insert</div><div class="v">Look completo.</div></div>
+        </div>
+        <div class="scene">
+          <div class="scene-title">Fechamento</div>
+          <div class="scene-row"><div class="k">Falado</div><div class="v">"Elegância não é ter mais. É saber escolher."</div></div>
+        </div>
+      </div>
+
+      <div class="subtoggle">
+        <div class="subtoggle-head" onclick="toggleSub(this)"><span class="mini-chevron">▶</span> Direção de gravação</div>
+        <div class="subtoggle-body"><div class="subtoggle-body-inner">
+          <div class="shoot-specs">
+            <div class="spec-card"><div class="spec-label">Duração</div><div class="spec-value">20-25s</div></div>
+            <div class="spec-card"><div class="spec-label">Tomadas de fala</div><div class="spec-value">1 única, contínua</div></div>
+            <div class="spec-card"><div class="spec-label">Inserts</div><div class="spec-value">Fotos já existentes</div></div>
+            <div class="spec-card"><div class="spec-label">Câmera</div><div class="spec-value">Celular no tripé, altura do rosto</div></div>
+          </div>
+          <div class="step-list">
+            <div class="step-item"><div class="step-num"></div><div class="step-text">Gravar a Hosana falando o roteiro inteiro, olhando direto pra lente, em uma única tomada contínua (não precisa cortar entre os 5 itens — a edição corta depois).</div></div>
+            <div class="step-item"><div class="step-num"></div><div class="step-text">Fazer 2-3 takes completos e escolher o mais natural na edição.</div></div>
+            <div class="step-item"><div class="step-num"></div><div class="step-text">Separar previamente 5 fotos do catálogo/Instagram que já existem, uma pra cada item — não precisa fotografar nada novo.</div></div>
+            <div class="step-item"><div class="step-num"></div><div class="step-text">Na edição, a foto entra por cima da fala no momento exato em que o item é mencionado.</div></div>
+          </div>
+          <div class="dodont">
+            <div class="dd-col no"><div class="dd-title">Evitar</div><ul>
+              <li>Transformar em aula</li>
+              <li>Pausar entre cada item pra trocar de posição</li>
+            </ul></div>
+            <div class="dd-col yes"><div class="dd-title">Priorizar</div><ul>
+              <li>Ritmo rápido, fala fluida</li>
+              <li>Compreensão rápida de cada ponto</li>
+            </ul></div>
+          </div>
+        </div></div>
+      </div>
+
+      <div class="cta-box">
+        <p><strong>CTA:</strong> Salve para lembrar na próxima vez que for se vestir.</p>
+      </div>
+    `
+  },
+  {
+    id: 6,
+    isNew: true,
+    type: "reel",
+    typeLabel: "Reel",
+    status: "togo",
+    func: "Comunicação",
+    title: "Eu preciso de poucos segundos para entender o que uma mulher está comunicando sem dizer uma palavra",
+    format: '"Leia a legenda" — vídeo curto + legenda rica',
+    body: `
+      <div class="block">
+        <div class="block-label">Objetivo</div>
+        <p>Construir autoridade para a Hosana. O conteúdo não é sobre "como ser elegante", mas sobre imagem, comportamento e comunicação — aquilo que ela percebe depois de anos atendendo mulheres.</p>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Ideia central</div>
+        <p>Cena natural da Hosana na loja — observando uma cliente diante do espelho, ajustando uma peça — com um gancho que promete revelação. A legenda entrega a experiência real de atendimento, não teoria sobre elegância.</p>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Roteiro completo</div>
+        <div class="scene">
+          <div class="scene-title">Vídeo <span class="scene-time">8s – 10s</span></div>
+          <div class="scene-row"><div class="k">Cena</div><div class="v">Natural da Hosana na loja: observando uma cliente diante do espelho, ajustando uma peça, organizando uma produção ou caminhando pela loja.</div></div>
+          <div class="scene-row"><div class="k">Texto</div><div class="v">"Eu preciso de poucos segundos para entender o que uma mulher está comunicando sem dizer uma palavra."</div></div>
+          <div class="scene-row"><div class="k">Final</div><div class="v">"Leia a legenda ↓"</div></div>
+        </div>
+      </div>
+
+      <div class="subtoggle">
+        <div class="subtoggle-head" onclick="toggleSub(this)"><span class="mini-chevron">▶</span> Legenda completa</div>
+        <div class="subtoggle-body"><div class="subtoggle-body-inner">
+          <p style="font-style:italic;">Uma mulher pode estar usando uma roupa linda e ainda assim transmitir uma mensagem completamente diferente daquela que gostaria.</p>
+          <p style="font-style:italic;">E isso é uma das primeiras coisas que percebo quando atendo uma cliente aqui na Esten.</p>
+          <p style="font-style:italic;">Antes de olhar para a roupa, eu observo a mulher.</p>
+          <p style="font-style:italic;"><strong>A forma como ela entra.</strong> Ela chega procurando exatamente o que quer ou ainda está tentando descobrir o que combina com ela?</p>
+          <p style="font-style:italic;"><strong>A forma como ela experimenta.</strong> Ela passa o tempo todo puxando, ajeitando, escondendo ou conferindo a roupa? Ou consegue simplesmente se movimentar e se enxergar nela?</p>
+          <p style="font-style:italic;"><strong>O que ela procura em uma peça.</strong> Algumas mulheres procuram apenas uma roupa bonita. Outras procuram uma roupa que faça sentido para a vida que levam. E existe uma diferença enorme entre as duas coisas.</p>
+          <p style="font-style:italic;"><strong>A relação dela com a própria imagem.</strong> Porque quando você ainda está tentando parecer outra pessoa, é muito fácil escolher uma roupa que fica bonita na modelo, na referência que você salvou ou naquela mulher que você admira. Mais difícil é escolher aquilo que realmente conversa com você.</p>
+          <p style="font-style:italic;">E talvez esse seja um dos sinais que mais observo: quando a mulher para de tentar construir uma imagem que não é dela e começa a se reconhecer no que veste.</p>
+          <p style="font-style:italic;">A roupa continua sendo importante. O caimento importa. O tecido importa. A combinação importa. Mas nada disso funciona completamente quando você não se reconhece ali.</p>
+          <p style="font-style:italic;">Depois de tantos anos atendendo mulheres, aprendi que vestir bem também é entender <strong>o que você quer comunicar antes mesmo de dizer uma palavra.</strong></p>
+          <p style="font-style:italic;">E isso muda completamente a forma como você escolhe uma roupa.</p>
+          <p style="font-weight:600;">O que você acha que uma mulher comunica antes mesmo de falar?</p>
+        </div></div>
+      </div>
+
+      <div class="subtoggle">
+        <div class="subtoggle-head" onclick="toggleSub(this)"><span class="mini-chevron">▶</span> Direção de gravação</div>
+        <div class="subtoggle-body"><div class="subtoggle-body-inner">
+          <div class="shoot-specs">
+            <div class="spec-card"><div class="spec-label">Duração</div><div class="spec-value">8-10s</div></div>
+            <div class="spec-card"><div class="spec-label">Tomada</div><div class="spec-value">1 plano contínuo</div></div>
+            <div class="spec-card"><div class="spec-label">Áudio</div><div class="spec-value">Sem fala — só texto na tela</div></div>
+            <div class="spec-card"><div class="spec-label">Câmera</div><div class="spec-value">Celular na mão, plano aberto</div></div>
+          </div>
+          <div class="step-list">
+            <div class="step-item"><div class="step-num"></div><div class="step-text">Gravar Hosana em movimento natural na loja — não precisa combinar antecipadamente, pode ser um momento real de atendimento ou organização.</div></div>
+            <div class="step-item"><div class="step-num"></div><div class="step-text">Câmera acompanha de longe, sem entrar em close no rosto — o plano precisa mostrar o espelho e o ambiente.</div></div>
+            <div class="step-item"><div class="step-num"></div><div class="step-text">Não gravar áudio de fala — o texto entra só como legenda sobre o vídeo, na edição.</div></div>
+            <div class="step-item"><div class="step-num"></div><div class="step-text">Escrever a legenda completa com calma antes de publicar — ela é o conteúdo principal desse Reel, não o vídeo.</div></div>
+          </div>
+          <p style="margin-top:10px;"><strong>Não explicar nada no vídeo.</strong> O vídeo cria a pergunta; a legenda entrega a experiência e a autoridade da Hosana.</p>
+        </div></div>
+      </div>
+    `
+  },
+  {
+    id: 7,
+    isNew: true,
+    type: "reel",
+    typeLabel: "Reel",
+    status: "togo",
+    func: "Praticidade",
+    title: "7 peças para 7 momentos da semana",
+    format: "7 vídeos curtos de looks, cortes rápidos + texto na tela",
+    body: `
+      <div class="block">
+        <div class="block-label">Objetivo</div>
+        <p>Mostrar peças da loja aplicadas a diferentes situações da rotina profissional, ajudando a cliente a visualizar possibilidades de uso.</p>
+      </div>
+
+      <div class="format-note">
+        As situações abaixo são apenas sugestões e podem ser adaptadas de acordo com as peças que a Hosana escolher e com as ocasiões que fizerem mais sentido para o público dela.
+      </div>
+
+      <div class="block">
+        <div class="block-label">Roteiro completo</div>
+        <div class="scene">
+          <div class="scene-title">Gancho <span class="scene-time">0s – 2s</span></div>
+          <div class="scene-row"><div class="k">Texto</div><div class="v">"7 momentos da semana + 7 peças que eu escolheria para cada um."</div></div>
+        </div>
+        <div class="scene">
+          <div class="scene-title">Os 7 blocos</div>
+          <div class="scene-row"><div class="k">Bloco 1 · Segunda</div><div class="v">"Para começar a semana com presença."</div></div>
+          <div class="scene-row"><div class="k">Bloco 2 · Terça</div><div class="v">"Mais leve, mas ainda profissional."</div></div>
+          <div class="scene-row"><div class="k">Bloco 3 · Quarta</div><div class="v">"Para aquele dia de reunião."</div></div>
+          <div class="scene-row"><div class="k">Bloco 4 · Quinta</div><div class="v">"Para passar o dia inteiro fora."</div></div>
+          <div class="scene-row"><div class="k">Bloco 5 · Sexta</div><div class="v">"Trabalho + compromisso depois."</div></div>
+          <div class="scene-row"><div class="k">Bloco 6</div><div class="v">Dia corrido — "Para vestir e sair sem pensar muito."</div></div>
+          <div class="scene-row"><div class="k">Bloco 7</div><div class="v">Peça coringa — "Para combinar com várias outras do guarda-roupa."</div></div>
+        </div>
+        <div class="scene">
+          <div class="scene-title">Fechamento</div>
+          <div class="scene-row"><div class="k">Texto</div><div class="v">"Qual desses momentos mais aparece na sua semana?"</div></div>
+        </div>
+      </div>
+
+      <div class="subtoggle">
+        <div class="subtoggle-head" onclick="toggleSub(this)"><span class="mini-chevron">▶</span> Direção de gravação</div>
+        <div class="subtoggle-body"><div class="subtoggle-body-inner">
+          <div class="shoot-specs">
+            <div class="spec-card"><div class="spec-label">Duração</div><div class="spec-value">~20s (7 blocos)</div></div>
+            <div class="spec-card"><div class="spec-label">Quem aparece</div><div class="spec-value">Ninguém falando — só os looks</div></div>
+            <div class="spec-card"><div class="spec-label">Quem grava</div><div class="spec-value">Qualquer pessoa da equipe</div></div>
+            <div class="spec-card"><div class="spec-label">Equipamento</div><div class="spec-value">Celular</div></div>
+          </div>
+          <div class="step-list">
+            <div class="step-item"><div class="step-num"></div><div class="step-text">Gravar apenas os 7 looks, um vídeo curto para cada peça. Cada look pode ser mostrado sendo vestido, em movimento ou em um take simples de corpo inteiro.</div></div>
+            <div class="step-item"><div class="step-num"></div><div class="step-text">Não precisa da Hosana falando ou aparecendo separadamente — o Reel inteiro pode ser só as peças.</div></div>
+            <div class="step-item"><div class="step-num"></div><div class="step-text">Gravar cada clipe com 3-4s de sobra, pra ter margem de corte na edição.</div></div>
+          </div>
+          <p style="margin-top:10px;"><strong>Edição:</strong> cortes rápidos, um look por bloco, com o texto correspondente na tela. Trilha única e dinâmica do início ao fim.</p>
+          <p style="margin-top:8px;"><strong>Importante:</strong> não precisa seguir exatamente "segunda, terça, quarta...". A ideia é que a Hosana escolha as peças e vocês adaptem as situações às ocasiões que fizerem mais sentido para cada uma delas.</p>
+        </div></div>
+      </div>
+
+      <div class="cta-box">
+        <p><strong>CTA:</strong> Qual desses momentos mais aparece na sua semana?</p>
+      </div>
+    `
+  },
+  {
+    id: 8,
+    isNew: true,
+    type: "reel",
+    typeLabel: "Reel",
+    status: "togo",
+    func: "Compra",
+    title: "Tem um erro que faz muitas mulheres comprarem roupas que quase nunca usam",
+    format: '"Leia a legenda" — vídeo de 5s + frase fixa',
+    body: `
+      <div class="block">
+        <div class="block-label">Objetivo</div>
+        <p>Conteúdo de comportamento de compra. A ideia é ensinar a cliente a comprar melhor, sem falar diretamente de produto.</p>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Ideia central</div>
+        <p>O erro não é de estilo — é de comprar pensando na peça, e não na vida. A legenda é o conteúdo; o vídeo só sustenta a atenção por 5 segundos.</p>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Roteiro completo</div>
+        <div class="scene">
+          <div class="scene-title">Vídeo <span class="scene-time">5s</span></div>
+          <div class="scene-row"><div class="k">Cena</div><div class="v">Bonita e simples na loja: Hosana olhando peças, passando pela arara ou observando uma roupa no espelho.</div></div>
+          <div class="scene-row"><div class="k">Texto fixo</div><div class="v">"Tem um erro que faz muitas mulheres comprarem roupas que quase nunca usam."</div></div>
+          <div class="scene-row"><div class="k">Final</div><div class="v">"Leia a legenda ↓"</div></div>
+        </div>
+      </div>
+
+      <div class="subtoggle">
+        <div class="subtoggle-head" onclick="toggleSub(this)"><span class="mini-chevron">▶</span> Legenda completa</div>
+        <div class="subtoggle-body"><div class="subtoggle-body-inner">
+          <p style="font-weight:600;">O erro começa pela compra: comprar pensando na peça, e não na sua vida.</p>
+          <p>A roupa está linda no provador. O tecido é bonito. O caimento funciona. Você se olha no espelho e pensa: "Eu preciso dessa."</p>
+          <p>Mas aí ela chega em casa. E começa o problema.</p>
+          <p>Você percebe que não sabe com o que usar. Que não combina com a maioria das peças que já tem. Que não funciona para os lugares que você realmente frequenta. Que exige uma ocasião específica que quase nunca aparece.</p>
+          <p>E aquela roupa que parecia perfeita acaba ficando no armário. Não porque a roupa era ruim. <strong>Mas porque ela nunca encontrou um lugar na sua vida.</strong></p>
+          <p>Antes de comprar uma peça, experimente trocar uma pergunta. Em vez de pensar apenas "Eu gostei?", pergunte: <strong>"Onde essa roupa entra na minha rotina?"</strong></p>
+          <p>Vou usar no trabalho? Consigo combinar com o que já tenho? Funciona para mais de uma ocasião? Eu me sinto confortável passando algumas horas com ela? Consigo me imaginar usando essa peça daqui a alguns meses — ou estou comprando porque gostei dela hoje?</p>
+          <p>Comprar bem não significa comprar somente o básico. Significa escolher peças que tenham <strong>função, possibilidades e sentido dentro da sua vida.</strong></p>
+          <p>Porque uma roupa pode ser maravilhosa. Mas se você nunca tiver motivo para tirá-la do armário, ela não foi uma boa compra.</p>
+          <p><strong>A melhor roupa não é necessariamente a mais bonita que você encontrou. É aquela que você realmente consegue viver.</strong></p>
+          <p style="font-weight:600;">Você já comprou uma peça linda que acabou esquecida no armário?</p>
+        </div></div>
+      </div>
+
+      <div class="subtoggle">
+        <div class="subtoggle-head" onclick="toggleSub(this)"><span class="mini-chevron">▶</span> Direção de gravação</div>
+        <div class="subtoggle-body"><div class="subtoggle-body-inner">
+          <div class="shoot-specs">
+            <div class="spec-card"><div class="spec-label">Duração</div><div class="spec-value">5s exatos</div></div>
+            <div class="spec-card"><div class="spec-label">Tomada</div><div class="spec-value">1 plano simples</div></div>
+            <div class="spec-card"><div class="spec-label">Áudio</div><div class="spec-value">Sem fala</div></div>
+            <div class="spec-card"><div class="spec-label">Local</div><div class="spec-value">Loja</div></div>
+          </div>
+          <div class="step-list">
+            <div class="step-item"><div class="step-num"></div><div class="step-text">Gravar um plano curto e contemplativo — Hosana olhando peças, passando a mão pela arara, ou observando algo no espelho — sem pressa, sem fala.</div></div>
+            <div class="step-item"><div class="step-num"></div><div class="step-text">Não precisa de múltiplas tomadas — um plano de 8-10s gravado já rende os 5s necessários na edição.</div></div>
+            <div class="step-item"><div class="step-num"></div><div class="step-text">Focar o esforço de produção na legenda, não no vídeo — reservar tempo pra revisar o texto com calma antes de publicar.</div></div>
+          </div>
+          <p style="margin-top:10px;"><strong>O vídeo não precisa explicar absolutamente nada.</strong> A legenda é o conteúdo. O único erro citado é comprar pensando na peça, e não na vida — não inserir lista de outros erros.</p>
+        </div></div>
+      </div>
+    `
+  },
+  {
+    id: 9,
+    isNew: true,
+    type: "reel",
+    typeLabel: "Reel",
+    status: "togo",
+    func: "Identidade",
+    title: "Vídeo cru — teste de formato (identidade e conexão)",
+    format: "Hosana se arrumando, fala livre — sem roteiro fechado",
+    body: `
+      <div class="block">
+        <div class="block-label">Objetivo</div>
+        <p>Identidade e conexão emocional — o conteúdo mais humano da sequência.</p>
+      </div>
+
+      <div class="format-note">
+        Esse é um teste de formato: conteúdo cru, sem produção elaborada, vem performando bem nas redes sociais ultimamente porque parece mais autêntico. A ideia aqui não é decorar um roteiro — é a Hosana falar livremente a partir de um dos temas abaixo. Ela escolhe o que fizer mais sentido no dia, ou testa mais de um em momentos diferentes pra ver qual performa melhor.
+      </div>
+
+      <div class="block">
+        <div class="block-label">Opções de tema (escolher uma para desenvolver)</div>
+
+        <div class="option-card">
+          <div class="option-label">Opção A — Guarda-roupa e mudança</div>
+          <div class="option-title">"Você já parou pra pensar se o seu guarda-roupa ainda combina com a mulher que você se tornou?"</div>
+          <p>Sobre a diferença entre quem você era e quem você é hoje — o guarda-roupa que não acompanhou a mudança. A gente muda de profissão, de rotina, de prioridades, mas às vezes continua se vestindo como a mulher que era há anos.</p>
+        </div>
+
+        <div class="option-card">
+          <div class="option-label">Opção B — Vestir-se para os outros vs. para si mesma</div>
+          <div class="option-title">"Eu percebi uma diferença entre se vestir pra ser vista e se vestir pra se sentir."</div>
+          <p>Tema de autenticidade — a diferença entre buscar validação externa e buscar bem-estar próprio na hora de se vestir.</p>
+        </div>
+
+        <div class="option-card">
+          <div class="option-label">Opção C — Obrigação vs. escolha</div>
+          <div class="option-title">"Existe uma diferença entre se vestir porque precisa sair de casa e se vestir porque decidiu quem quer ser hoje."</div>
+          <p>Mais próximo do dia a dia da mulher ocupada — a diferença entre se vestir no piloto automático e se vestir com intenção.</p>
+        </div>
+      </div>
+
+      <div class="subtoggle">
+        <div class="subtoggle-head" onclick="toggleSub(this)"><span class="mini-chevron">▶</span> Direção de gravação</div>
+        <div class="subtoggle-body"><div class="subtoggle-body-inner">
+          <div class="shoot-specs">
+            <div class="spec-card"><div class="spec-label">Duração</div><div class="spec-value">30-40s</div></div>
+            <div class="spec-card"><div class="spec-label">Tomadas</div><div class="spec-value">Vários takes livres</div></div>
+            <div class="spec-card"><div class="spec-label">Câmera</div><div class="spec-value">Acompanha o movimento, sem tripé fixo</div></div>
+            <div class="spec-card"><div class="spec-label">Local</div><div class="spec-value">Camarim/provador ou casa</div></div>
+          </div>
+          <div class="step-list">
+            <div class="step-item"><div class="step-num"></div><div class="step-text">Hosana escolhe uma das 3 opções (ou mais de uma, em dias diferentes, pra testar).</div></div>
+            <div class="step-item"><div class="step-num"></div><div class="step-text">Se arruma de verdade — brinco, cabelo, cinto, blazer — na ordem que fizer sentido pra ela naquele dia.</div></div>
+            <div class="step-item"><div class="step-num"></div><div class="step-text">Câmera (segurada por outra pessoa, ou celular apoiado próximo) acompanha o movimento — sem cortar toda hora, deixando a cena fluir.</div></div>
+            <div class="step-item"><div class="step-num"></div><div class="step-text">Gravar 2-3 vezes completas, cada vez com liberdade pra falar diferente — não é pra decorar, é pra internalizar o tema e falar com as próprias palavras.</div></div>
+            <div class="step-item"><div class="step-num"></div><div class="step-text">Na edição, escolher a tomada mais natural (não necessariamente a mais "certinha") e fazer só pequenos cortes de ritmo.</div></div>
+          </div>
+          <p style="margin-top:10px;"><strong>Não decorar palavra por palavra.</strong> A Hosana deve falar como fala normalmente. Se ela mudar alguma frase e ficar mais natural, melhor.</p>
+        </div></div>
+      </div>
+
+      <div class="cta-box">
+        <p><strong>Tela final:</strong> ELEGÂNCIA COM PROPÓSITO.</p>
+        <p><strong>CTA:</strong> Nenhum — zero CTA. Esse Reel não vende, constrói identidade.</p>
+      </div>
+    `
+  },
+  {
+    id: 10,
+    isNew: true,
+    type: "reel",
+    typeLabel: "Reel",
+    status: "togo",
+    func: "Experiência/Produto",
+    title: "Isso não pode faltar em uma roupa para trabalhar",
+    format: "Hosana responde com base em experiência real — observação aberta",
+    body: `
+      <div class="block">
+        <div class="block-label">Objetivo</div>
+        <p>Prova de autoridade + produto. Fechamento comercial natural da sequência — mas o valor está numa observação real da Hosana, não num roteiro pronto.</p>
+      </div>
+
+      <div class="format-note">
+        Esse vídeo é de opinião e percepção, não de discurso decorado. "Conforto" aparece abaixo só como exemplo — pode ser outra coisa completamente diferente. O que importa é que seja algo que a Hosana realmente observa, de forma repetida, como extremamente necessário numa roupa de trabalho — não uma resposta genérica de marketing.
+      </div>
+
+      <div class="block">
+        <div class="block-label">Estrutura — início, meio e fim</div>
+
+        <div class="scene">
+          <div class="scene-title">Início — Gancho (falar quase palavra por palavra, específico)</div>
+          <div class="scene-row"><div class="k">Falado</div><div class="v">"Depois de atender tantas [profissões reais confirmadas — ex: médicas, advogadas, empresárias, arquitetas] aqui na Esten, eu percebi uma coisa: isso não pode faltar em uma roupa para trabalhar."</div></div>
+        </div>
+
+        <div class="scene">
+          <div class="scene-title">Meio — A observação (aberto, ela escolhe o que realmente nota)</div>
+          <div class="scene-row"><div class="k">Direção</div><div class="v">Aqui a Hosana nomeia a UMA coisa que ela genuinamente vê se repetir entre as clientes. Não precisa ser conforto — pode ser qualquer observação real dela.</div></div>
+        </div>
+
+        <div class="scene">
+          <div class="scene-title">Fim — Fechamento (conecta a observação de volta à Esten)</div>
+          <div class="scene-row"><div class="k">Direção</div><div class="v">Uma frase curta que amarra a observação ao trabalho da Esten — ex: "e é por isso que cada peça aqui é pensada pra resolver exatamente isso."</div></div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Exemplos de observação (ilustrativos — usar só se forem verdade)</div>
+        <ul>
+          <li><strong>Conforto que aguenta o dia inteiro</strong> — sem precisar ajustar ou ajeitar a roupa toda hora.</li>
+          <li><strong>Praticidade</strong> — não precisar pensar ou montar o look pela manhã.</li>
+          <li><strong>Caimento que resolve o corpo real</strong> — não o corpo de manequim.</li>
+          <li><strong>Versatilidade</strong> — a mesma peça atendendo manhã e noite.</li>
+          <li><strong>Durabilidade/qualidade</strong> — aguentar o uso constante sem perder a forma.</li>
+        </ul>
+        <p style="font-size:13px;color:var(--ink-soft);margin-top:6px;">Essas são só direções possíveis — se a observação real da Hosana for outra, essa é a que vale.</p>
+      </div>
+
+      <div class="subtoggle">
+        <div class="subtoggle-head" onclick="toggleSub(this)"><span class="mini-chevron">▶</span> Direção de gravação</div>
+        <div class="subtoggle-body"><div class="subtoggle-body-inner">
+          <div class="shoot-specs">
+            <div class="spec-card"><div class="spec-label">Duração</div><div class="spec-value">25-30s</div></div>
+            <div class="spec-card"><div class="spec-label">Tomada</div><div class="spec-value">1 contínua, sem cortes</div></div>
+            <div class="spec-card"><div class="spec-label">Câmera</div><div class="spec-value">Tripé, altura do rosto</div></div>
+            <div class="spec-card"><div class="spec-label">Preparo</div><div class="spec-value">Pensar na resposta antes</div></div>
+          </div>
+          <div class="step-list">
+            <div class="step-item"><div class="step-num"></div><div class="step-text"><strong>Antes de ligar a câmera:</strong> confirmar a lista real de profissões atendidas na Esten (não usar nenhuma só porque faz parte do público-alvo desejado), e pensar com calma qual é a observação real — a única coisa que ela nota se repetir.</div></div>
+            <div class="step-item"><div class="step-num"></div><div class="step-text">Gravar o gancho (início) de forma mais fixa — essa parte pode ser dita quase igual, porque é específica e curta.</div></div>
+            <div class="step-item"><div class="step-num"></div><div class="step-text">Deixar o meio (a observação) livre — ela fala com as próprias palavras, sem tentar acertar uma frase pronta.</div></div>
+            <div class="step-item"><div class="step-num"></div><div class="step-text">Se ela travar ou começar a divagar, parar e regravar do zero — não tentar "consertar" no meio da fala.</div></div>
+            <div class="step-item"><div class="step-num"></div><div class="step-text">Gravar 2-3 versões completas pra ter opção na edição.</div></div>
+          </div>
+        </div></div>
+      </div>
+
+      <div class="cta-box">
+        <p><strong>CTA:</strong> O que não pode faltar na sua roupa de trabalho?</p>
+      </div>
+    `
+  }
+];
+
+const container = document.getElementById('cards');
+
+const STATUS_ORDER = ['togo', 'recorded', 'edited', 'posted'];
+const STATUS_LABELS = {
+  togo: '○ A gravar',
+  recorded: '🎬 Gravado',
+  edited: '✂️ Editado',
+  posted: '✓ Postado'
+};
+
+function getStatus(item) {
+  const saved = localStorage.getItem('esten-status-' + item.id);
+  if (saved && STATUS_ORDER.includes(saved)) return saved;
+  return item.status === 'posted' ? 'posted' : 'togo';
+}
+
+function cycleStatus(e, id) {
+  e.stopPropagation();
+  const idx = STATUS_ORDER.indexOf(currentStatusMap[id]);
+  const next = STATUS_ORDER[(idx + 1) % STATUS_ORDER.length];
+  localStorage.setItem('esten-status-' + id, next);
+  currentStatusMap[id] = next;
+  const pill = document.getElementById('status-' + id);
+  if (pill) {
+    pill.className = 'tag status-pill status-' + next;
+    pill.textContent = STATUS_LABELS[next];
+  }
+  const card = document.getElementById('card-' + id);
+  if (card) card.classList.toggle('posted', next === 'posted');
+}
+
+let currentStatusMap = {};
+
+function render(list) {
+  container.innerHTML = list.map(cardHTML).join('');
+}
+
+function cardHTML(item) {
+  const status = getStatus(item);
+  currentStatusMap[item.id] = status;
+  return `
+    <div class="card ${status === 'posted' ? 'posted' : ''}" id="card-${item.id}">
+      <div class="card-head" onclick="toggleCard(${item.id})">
+        <div class="chevron">▶</div>
+        <div class="num-badge">${String(item.id).padStart(2,'0')}</div>
+        <div class="head-text">
+          <div class="head-title">${item.title}</div>
+          <div class="head-sub">${item.isNew ? `<span class="tag new-badge">✨ Novo</span>` : ''}<span class="tag status-pill status-${status}" id="status-${item.id}" onclick="cycleStatus(event, ${item.id})" title="Clique para atualizar o status">${STATUS_LABELS[status]}</span><span class="tag">${item.typeLabel}</span>${item.func ? `<span class="tag func">${item.func}</span>` : ''} ${item.format}</div>
+        </div>
+      </div>
+      <div class="card-body" id="body-${item.id}">
+        <div class="card-body-inner">${item.body}</div>
+      </div>
+    </div>
+  `;
+}
+
+function toggleCard(id) {
+  const card = document.getElementById('card-' + id);
+  const body = document.getElementById('body-' + id);
+  const isOpen = card.classList.contains('open');
+  if (isOpen) {
+    card.classList.remove('open');
+    body.style.maxHeight = null;
+  } else {
+    card.classList.add('open');
+    body.style.maxHeight = body.scrollHeight + 'px';
+    setTimeout(() => { if (card.classList.contains('open')) body.style.maxHeight = body.scrollHeight + 'px'; }, 200);
+  }
+}
+
+function toggleSub(el) {
+  const sub = el.parentElement;
+  const body = sub.querySelector('.subtoggle-body');
+  const isOpen = sub.classList.contains('open');
+  if (isOpen) {
+    sub.classList.remove('open');
+    body.style.maxHeight = null;
+  } else {
+    sub.classList.add('open');
+    body.style.maxHeight = body.scrollHeight + 'px';
+  }
+  let parentBody = el.closest('.card-body');
+  if (parentBody && parentBody.style.maxHeight) {
+    setTimeout(() => { parentBody.style.maxHeight = parentBody.scrollHeight + 'px'; }, 320);
+  }
+}
+
+document.getElementById('filters').addEventListener('click', (e) => {
+  if (!e.target.classList.contains('filter-btn')) return;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  const f = e.target.dataset.filter;
+  let filtered = DATA;
+  if (f === 'reel') filtered = DATA.filter(d => d.type === 'reel');
+  else if (f === 'carrossel') filtered = DATA.filter(d => d.type === 'carrossel');
+  else if (f === 'posted') filtered = DATA.filter(d => getStatus(d) === 'posted');
+  else if (f === 'togo') filtered = DATA.filter(d => getStatus(d) !== 'posted');
+  render(filtered);
+});
+
+render(DATA);
+</script>
+</body>
+</html>
